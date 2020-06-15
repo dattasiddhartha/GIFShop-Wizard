@@ -1,6 +1,8 @@
 # GIFShop Wizard
 
-Collaborators: Siddhartha Datta, Jacky Lee
+<i>Collaborators: Siddhartha Datta, Jacky Lee</i>
+
+<img src="https://github.com/dattasiddhartha/GIFShop-Wizard/blob/master/payload/DZ1BJU_FST.gif?raw=true" width=400px></img>
 
 Submission for Facebook Hackathon 2020 (Messenger).
 
@@ -8,11 +10,13 @@ Implementing based on [functional requirements](https://docs.google.com/document
 
 Current functionality:
 * Receive messages from user, replies with text (non-NLP)
-* Receive user GIF as payload url, and can successfully reply back the same GIF
+* Receive user GIF as payload url, and can successfully reply back the same GIF (parsing GIFs & modifying them)
+* Fast Style Transfer (we store pretrained styles to be applied to user input images)
+* Segmented Style Transfer (we apply instance segmentation to images and apply FST to those segments only)
 
 Next steps:
 * Image editing functions
-* Parsing GIFs & modifying them
+* Quick replies
 
 ## Usage
 

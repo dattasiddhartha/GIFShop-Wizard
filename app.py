@@ -7,6 +7,7 @@ from PIL import Image
 import numpy as np
 from faststyletransfer_train import FastStyleTransfer
 from faststyletransfer_eval import FasterStyleTransfer
+from segmentedstyletransfer import PartialStyleTransfer
 
 app = Flask(__name__)       # Initializing our Flask application
 ACCESS_TOKEN = cred.ACCESS_TOKEN
@@ -46,14 +47,17 @@ def receive_message():
                         #send_QuickReplies(recipient_id, response_sent_text)
 
                         temp_filename = id_generator()
-                        #send_ImageBackToUser(recipient_id, url_of_attachment)
+                        
                         try:
-                            send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment)
+                            #send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment, 'pFST')
+                            bot.send_attachment_url(recipient_id, "image", "https://253e59f1d8c3.ngrok.io/file/NRG0JF_MASKFST.gif")
                         except:
                             send_message(recipient_id, "cleared")
 
                         # clear up backlog of responses during development
                         #send_message(recipient_id, "cleared")
+
+                        #send_ImageBackToUser(recipient_id, url_of_attachment)
 
     return "Message Processed"
 
@@ -99,8 +103,8 @@ def send_ImageBackToUser(recipient_id, url_of_attachment):
     extractFrames('./payload/'+str(temp_filename)+'.gif', './payload/'+str(temp_filename))
     stitchImages('./payload/'+str(temp_filename), str(temp_filename))
 
-    print("Img url: ", str(cred.ngrok_link+"file/"+str(temp_filename)+"_new.gif"))
-    bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"file/"+str(temp_filename)+"_new.gif"))
+    print("Img url: ", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_new.gif"))
+    bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_new.gif"))
 
     return "success"
 
@@ -129,24 +133,32 @@ def stitchImages(dir, filename):
     imageio.mimsave(str(dir+'_new.gif').replace("\\","/"), images)
 
 
+# (.pth) weight files used stored in C:\Users\datta\.cache\torch\checkpoints
+
 # with custom Training has some issues
-def send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment):
+def send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment, mode):
     # parse the GIF as individual images > Reverse the order of the images > Restitch into GIF > Load it as a URL to be sent (?)
     #temp_filename = id_generator()
     urllib.request.urlretrieve(url_of_attachment, './payload/'+str(temp_filename)+'.gif')
     os.mkdir('./payload/'+str(temp_filename))
     extractFrames('./payload/'+str(temp_filename)+'.gif', './payload/'+str(temp_filename))
 
-    os.mkdir('./payload/FST_'+str(temp_filename))
-
     # Client side - Issue is TORCH.DATALOADER, keeps refreshing flask
     #stitch_FST_Images_ClientStyle('./payload/'+str(temp_filename), './payload/FST_'+str(temp_filename), str(temp_filename))
 
-    # Server side style images - pretrained models
-    stitch_FST_Images_ServerStyle('./payload/'+str(temp_filename), './payload/FST_'+str(temp_filename), str(temp_filename))
+    if mode == 'FST':
+        os.mkdir('./payload/FST_'+str(temp_filename))
+        # Server side style images - pretrained models
+        stitch_FST_Images_ServerStyle('./payload/'+str(temp_filename), './payload/FST_'+str(temp_filename), str(temp_filename))
+        print("Img url: ", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_FST.gif"))
+        bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_FST.gif"))
 
-    print("Img url: ", str(cred.ngrok_link+"file/"+str(temp_filename)+"_FST.gif"))
-    bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_FST.gif"))
+    if mode == 'pFST':
+        # partial style transfer
+        stitch_partialFST_Images_ServerStyle('./payload/'+str(temp_filename), str(temp_filename))
+        print("Img url: ", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_MASK+FST.gif"))
+        bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_MASK+FST.gif"))
+    
 
     return "success"
 
@@ -170,6 +182,30 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir+'_FST.gif').replace("\\","/"), images)
+
+def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
+    # Load frames
+    filenames = []
+    for f in glob.iglob(orig_dir+"/*"):
+        filenames.append(f)
+
+    # apply style transfer to each frame
+    counter=0
+    for filename in filenames:
+        #PartialStyleTransfer(mode = 'color', img_path=filename, style_path="./fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth")
+        PartialStyleTransfer(mode = 'styled', img_path=filename, style_path="./fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth")
+        counter+=1
+
+    ## Save into a GIF file that loops forever
+    filenames_ST = []
+    for f in glob.iglob(orig_dir+"/*"):
+        if str(unique_filename) in f:
+            if "_MASK+FST.png" in f:
+                filenames_ST.append(f)
+    images = []
+    for filename in filenames_ST:
+        images.append(imageio.imread(filename))
+    imageio.mimsave(str(orig_dir+'_MASK+FST.gif').replace("\\","/"), images)
 
 def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
     # Load frames
