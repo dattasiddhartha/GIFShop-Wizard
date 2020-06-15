@@ -1,15 +1,12 @@
-import random
+import random, os, glob, imageio, pathlib, string
 from flask import Flask, request, send_from_directory, send_file
 from chat.bot import Bot
 import credentials as cred
 import urllib.request
-import string
 from PIL import Image
-import os
-import glob
 import numpy as np
-import imageio
-import pathlib
+from faststyletransfer_train import FastStyleTransfer
+from faststyletransfer_eval import FasterStyleTransfer
 
 app = Flask(__name__)       # Initializing our Flask application
 ACCESS_TOKEN = cred.ACCESS_TOKEN
@@ -47,7 +44,17 @@ def receive_message():
                         url_of_attachment = response_sent_text[0]['payload']['url']
                         #send_message(recipient_id, response_sent_text)
                         #send_QuickReplies(recipient_id, response_sent_text)
-                        send_ImageBackToUser(recipient_id, url_of_attachment)
+
+                        temp_filename = id_generator()
+                        #send_ImageBackToUser(recipient_id, url_of_attachment)
+                        try:
+                            send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment)
+                        except:
+                            send_message(recipient_id, "cleared")
+
+                        # clear up backlog of responses during development
+                        #send_message(recipient_id, "cleared")
+
     return "Message Processed"
 
 @app.route('/file/<string:path>', methods=['GET'])
@@ -85,9 +92,6 @@ def send_QuickReplies(recipient_id, response):
     return "success"
 
 def send_ImageBackToUser(recipient_id, url_of_attachment):
-    #bot.send_attachment(recipient_id, "image", response)
-    
-
     # parse the GIF as individual images > Reverse the order of the images > Restitch into GIF > Load it as a URL to be sent (?)
     temp_filename = id_generator()
     urllib.request.urlretrieve(url_of_attachment, './payload/'+str(temp_filename)+'.gif')
@@ -95,18 +99,10 @@ def send_ImageBackToUser(recipient_id, url_of_attachment):
     extractFrames('./payload/'+str(temp_filename)+'.gif', './payload/'+str(temp_filename))
     stitchImages('./payload/'+str(temp_filename), str(temp_filename))
 
-    #bot.send_attachment_url(recipient_id, "image", url_of_attachment)
     print("Img url: ", str(cred.ngrok_link+"file/"+str(temp_filename)+"_new.gif"))
     bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"file/"+str(temp_filename)+"_new.gif"))
 
-
-
-    #bot.send_attachment(recipient_id, "image", './payload/'+str(temp_filename)+'_new.gif')
-    #bot.send_attachment_local(recipient_id, "image", './payload/'+str(temp_filename)+'_new.gif')
-    #bot.send_attachment_url(recipient_id, "image", pathlib.Path(os.path.abspath('./payload/'+str(temp_filename)+'_new.gif')).as_uri())
-
     return "success"
-
 
 def extractFrames(inGif, outFolder):
     frame = Image.open(inGif)
@@ -126,15 +122,75 @@ def stitchImages(dir, filename):
     for f in glob.iglob(dir+"/*"):
         filenames.append(f)
 
-    # random shuffling
-    #filenames = random.shuffle(filenames)
-    #print(filenames)
-
     ## Save into a GIF file that loops forever
     images = []
     for filename in filenames:
         images.append(imageio.imread(filename))
     imageio.mimsave(str(dir+'_new.gif').replace("\\","/"), images)
+
+
+# with custom Training has some issues
+def send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment):
+    # parse the GIF as individual images > Reverse the order of the images > Restitch into GIF > Load it as a URL to be sent (?)
+    #temp_filename = id_generator()
+    urllib.request.urlretrieve(url_of_attachment, './payload/'+str(temp_filename)+'.gif')
+    os.mkdir('./payload/'+str(temp_filename))
+    extractFrames('./payload/'+str(temp_filename)+'.gif', './payload/'+str(temp_filename))
+
+    os.mkdir('./payload/FST_'+str(temp_filename))
+
+    # Client side - Issue is TORCH.DATALOADER, keeps refreshing flask
+    #stitch_FST_Images_ClientStyle('./payload/'+str(temp_filename), './payload/FST_'+str(temp_filename), str(temp_filename))
+
+    # Server side style images - pretrained models
+    stitch_FST_Images_ServerStyle('./payload/'+str(temp_filename), './payload/FST_'+str(temp_filename), str(temp_filename))
+
+    print("Img url: ", str(cred.ngrok_link+"file/"+str(temp_filename)+"_FST.gif"))
+    bot.send_attachment_url(recipient_id, "image", str(cred.ngrok_link+"/file/"+str(temp_filename)+"_FST.gif"))
+
+    return "success"
+
+def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
+    # Load frames
+    filenames = []
+    for f in glob.iglob(orig_dir+"/*"):
+        filenames.append(f)
+
+    # apply style transfer to each frame
+    counter=0
+    for filename in filenames:
+        FasterStyleTransfer("./fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth", filename, styled_dir+"/"+str(unique_filename)+"_FST_"+str(counter)+"_.png")
+        counter+=1
+
+    ## Save into a GIF file that loops forever
+    filenames_ST = []
+    for f in glob.iglob(styled_dir+"/*"):
+        filenames_ST.append(f)
+    images = []
+    for filename in filenames_ST:
+        images.append(imageio.imread(filename))
+    imageio.mimsave(str(orig_dir+'_FST.gif').replace("\\","/"), images)
+
+def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
+    # Load frames
+    filenames = []
+    for f in glob.iglob(orig_dir+"/*"):
+        filenames.append(f)
+
+    # apply style transfer to each frame
+    counter=0
+    for filename in filenames:
+        FastStyleTransfer("unique_id", 50, filename, "./fast_neural_style_transfer/style_images/mosaic.jpg", styled_dir+"/"+str(unique_filename)+"_FST.png")
+        counter+=1
+
+    ## Save into a GIF file that loops forever
+    filenames_ST = []
+    for f in glob.iglob(styled_dir+"/*"):
+        filenames_ST.append(f)
+    images = []
+    for filename in filenames_ST:
+        images.append(imageio.imread(filename))
+    imageio.mimsave(str(dir+'_FST.gif').replace("\\","/"), images)
 
 
 
