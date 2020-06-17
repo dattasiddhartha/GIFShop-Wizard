@@ -3,7 +3,7 @@
 *Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/), [Jacky Lee](https://github.com/grenmester)
 
 <img src="payload/DZ1BJU_FST.gif?raw=true" height="200px"></img>
-<img src="https://raw.githubusercontent.com/dattasiddhartha/GIFShop-Wizard/master/payload/R3S6U3_FOM.gif?token=AKO4KFHBZJEU7SDSI2JO3VK65DHO4" height="200px"></img>
+<img src="payload/R3S6U3_FOM.gif?raw=true" height="200px"></img>
 
 Submission for Facebook Hackathon 2020 (Messenger).
 
