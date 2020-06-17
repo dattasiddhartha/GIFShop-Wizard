@@ -2,8 +2,8 @@
 
 *Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/), [Jacky Lee](https://github.com/grenmester)
 
-<img src="payload/DZ1BJU_FST.gif?raw=true" height="200px"></img>
-<img src="payload/R3S6U3_FOM.gif?raw=true" height="200px"></img>
+<img src="vision/first_order_motion/output/R3S6U3_FOM.gif?raw=true" height="200px"></img> 
+<img src="vision/fast_neural_style_transfer/videos/DZ1BJU_FST.gif?raw=true" height="200px"></img>
 
 Submission for Facebook Hackathon 2020 (Messenger).
 
@@ -53,9 +53,9 @@ when running the `ngrok` service.
 ## Model weights & data
 
 * <i>coco_2017</i> (with subdirectory val2017) placed in <i>./vision/fast_neural_style_transfer/coco_2017</i>
-* <i>maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth</i> placed in <i>C:/Users/<YOUR-COMPUTER>/.cache/torch/checkpoints/</i>
-* <i>vgg16-397923af.pth</i> placed in <i>C:/Users/<YOUR-COMPUTER>/.cache/torch/checkpoints/</i>
-* <i>vgg19-dcbb9e9d.pth</i> placed in <i>C:/Users/<YOUR-COMPUTER>/.cache/torch/checkpoints/</i>
+* <i>maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>
+* <i>vgg16-397923af.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>
+* <i>vgg19-dcbb9e9d.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>
 * <i>vox-cpk.pth.tar</i> placed in <i>./vision/first_order_motion/</i>
 * <i>pix2pix/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
 * <i>yolo/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
