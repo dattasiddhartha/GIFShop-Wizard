@@ -19,10 +19,14 @@ Current functionality:
 * Fast Style Transfer (we store pretrained styles to be applied to user input images)
 * Segmented Style Transfer (we apply instance segmentation to images and apply
   FST to those segments only)
+* First Order of Motion (i.e. DeepFakes, as long as driver video and content image are cropped in shape enough)
+* Foreground Removal
 
 Next steps:
 
 * Even more image editing functions
+* Dialogue flow
+* Error handling
 
 
 ## Usage
@@ -45,7 +49,19 @@ Remember to update the [Messenger
 Webhook](https://developers.facebook.com/apps/309273736750794/messenger/settings/)
 when running the `ngrok` service.
 
-Warnings:
+
+## Model weights & data
+
+* <i>coco_2017</i> (with subdirectory val2017) placed in <i>./vision/fast_neural_style_transfer/coco_2017</i>
+* <i>maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth</i> placed in <i>C:/Users/<YOUR-COMPUTER>/.cache/torch/checkpoints/</i>
+* <i>vgg16-397923af.pth</i> placed in <i>C:/Users/<YOUR-COMPUTER>/.cache/torch/checkpoints/</i>
+* <i>vgg19-dcbb9e9d.pth</i> placed in <i>C:/Users/<YOUR-COMPUTER>/.cache/torch/checkpoints/</i>
+* <i>vox-cpk.pth.tar</i> placed in <i>./vision/first_order_motion/</i>
+* <i>pix2pix/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
+* <i>yolo/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
+
+
+### Warnings:
 
 * When appending shared docs on public files, be careful about the information
   they or their history contain
