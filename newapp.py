@@ -146,7 +146,6 @@ def continue_processing(recipient_id, message):
                 else:
                     return "Failed processing"
         # No valid option was selected
-        bot.send_text(recipient_id, "Please send a valid command")
         bot.send_quick_reply(
             recipient_id, "Please send a valid command", IMAGE_PROCESSING_OPTIONS,
         )
