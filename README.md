@@ -1,6 +1,6 @@
 # GIFShop Wizard
 
-Collaborators: Siddhartha Datta, Jacky Lee
+*Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/), [Jacky Lee](https://github.com/grenmester)
 
 ![GIF](payload/DZ1BJU_FST.gif?raw=true)
 
@@ -12,6 +12,7 @@ requirements](https://docs.google.com/document/d/1T6mk4aypOCCCxcz2EJtfLNoait8uim
 Current functionality:
 
 * Receive messages from user, replies with text (non-NLP)
+* Quick replies
 * Receive user GIF as payload url, and can successfully reply back the same GIF
   (parsing GIFs & modifying them)
 * Fast Style Transfer (we store pretrained styles to be applied to user input images)
@@ -20,12 +21,17 @@ Current functionality:
 
 Next steps:
 
-* Image editing functions
-* Quick replies
+* Even more image editing functions
+
 
 ## Usage
 
 Make sure you first update your credentials in the `credentials.py` file.
+```
+ACCESS_TOKEN = "enter your access token provided by Facebook"
+VERIFY_TOKEN = "enter your personalized verify token"
+ngrok_link = "your custom ngrok callback url"
+```
 
 Run the chatbot with the following command.
 

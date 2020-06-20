@@ -5,14 +5,18 @@ import credentials as cred
 import urllib.request
 from PIL import Image
 import numpy as np
-from faststyletransfer_train import FastStyleTransfer
-from faststyletransfer_eval import FasterStyleTransfer
-from segmentedstyletransfer import PartialStyleTransfer
+from vision.faststyletransfer_train import FastStyleTransfer
+from vision.faststyletransfer_eval import FasterStyleTransfer
+from vision.segmentedstyletransfer import PartialStyleTransfer
+from vision.firstordermotion import FirstOrderMotion
+from vision import compress
 
 app = Flask(__name__)  # Initializing our Flask application
 ACCESS_TOKEN = cred.ACCESS_TOKEN
 VERIFY_TOKEN = cred.VERIFY_TOKEN
 bot = Bot(ACCESS_TOKEN)
+
+print("server link: ", cred.ngrok_link)
 
 # Importing standard route and two requst types: GET and POST.
 # We will receive messages that Facebook sends our bot at this endpoint
@@ -49,20 +53,45 @@ def receive_message():
 
                         temp_filename = id_generator()
 
-                        try:
-                            # send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment, 'pFST')
-                            bot.send_attachment_url(
-                                recipient_id,
-                                "image",
-                                "https://253e59f1d8c3.ngrok.io/file/NRG0JF_MASKFST.gif",
-                            )
-                        except:
-                            send_message(recipient_id, "cleared")
+                        #try:
+
+                        # Note: GIF sending functionality works under stable internet connection
+                        # There is a 10 seconds timeout limit for sending images
+                        # Source: https://developers.facebook.com/docs/messenger-platform/reference/attachment-upload-api/
+
+                        ## GIF callback test
+                        #send_ImageBackToUser(recipient_id, url_of_attachment)
+
+                        # vanilla FST
+                        #send_FastStyleTransfer(
+                        #    temp_filename,
+                        #    recipient_id,
+                        #    url_of_attachment,
+                        #    'FST'
+                        #)
+
+                        ## segmented FST
+                        #send_FastStyleTransfer(
+                        #    temp_filename,
+                        #    recipient_id,
+                        #    url_of_attachment,
+                        #    'pFST'
+                        #)
+
+                        ## deepfakes
+                        send_FirstOrderMotion(
+                            temp_filename,
+                            recipient_id,
+                            url_of_attachment
+                        )
+
+                        #except:
+                        #    send_message(recipient_id, "please wait a sec")
+
 
                         # clear up backlog of responses during development
                         # send_message(recipient_id, "cleared")
 
-                        # send_ImageBackToUser(recipient_id, url_of_attachment)
 
     return "Message Processed"
 
@@ -123,6 +152,9 @@ def send_ImageBackToUser(recipient_id, url_of_attachment):
         "./payload/" + str(temp_filename) + ".gif", "./payload/" + str(temp_filename)
     )
     stitchImages("./payload/" + str(temp_filename), str(temp_filename))
+
+    # GIF compression
+    compress.resize_gif("./payload/" + str(temp_filename) + "_new.gif", save_as="./payload/" + str(temp_filename) + "_new.gif", resize_to=None, magnitude=5)
 
     print(
         "Img url: ", str(cred.ngrok_link + "/file/" + str(temp_filename) + "_new.gif")
@@ -189,6 +221,10 @@ def send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment, mode)
             "./payload/FST_" + str(temp_filename),
             str(temp_filename),
         )
+
+        # GIF compression
+        compress.resize_gif("./payload/" + str(temp_filename) + "_FST.gif", save_as="./payload/" + str(temp_filename) + "_FST.gif", resize_to=None, magnitude=5)
+
         print(
             "Img url: ",
             str(cred.ngrok_link + "/file/" + str(temp_filename) + "_FST.gif"),
@@ -204,6 +240,10 @@ def send_FastStyleTransfer(temp_filename, recipient_id, url_of_attachment, mode)
         stitch_partialFST_Images_ServerStyle(
             "./payload/" + str(temp_filename), str(temp_filename)
         )
+
+        # GIF compression
+        compress.resize_gif("./payload/" + str(temp_filename) + "_MASK+FST.gif", save_as="./payload/" + str(temp_filename) + "_MASK+FST.gif", resize_to=None, magnitude=5)
+
         print(
             "Img url: ",
             str(cred.ngrok_link + "/file/" + str(temp_filename) + "_MASK+FST.gif"),
@@ -227,7 +267,7 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
     counter = 0
     for filename in filenames:
         FasterStyleTransfer(
-            "./fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth",
+            "./vision/fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth",
             filename,
             styled_dir + "/" + str(unique_filename) + "_FST_" + str(counter) + "_.png",
         )
@@ -256,7 +296,7 @@ def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
         PartialStyleTransfer(
             mode="styled",
             img_path=filename,
-            style_path="./fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth",
+            style_path="./vision/fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth",
         )
         counter += 1
 
@@ -298,6 +338,32 @@ def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
     imageio.mimsave(str(dir + "_FST.gif").replace("\\", "/"), images)
+
+def send_FirstOrderMotion(temp_filename, recipient_id, url_of_attachment):
+    # i.e. DeepFakes
+    urllib.request.urlretrieve(
+        url_of_attachment, "./payload/" + str(temp_filename) + ".gif"
+    )
+
+    FirstOrderMotion(
+            export_path = "./payload/" + str(temp_filename) + "_FOM.gif",
+            source_path = './vision/first_order_motion/data/02.png',
+            driving_path = "./payload/" + str(temp_filename) + ".gif",
+            model_path = './vision/first_order_motion/vox-cpk.pth.tar'
+        )
+
+    # GIF compression
+    compress.resize_gif("./payload/" + str(temp_filename) + "_FOM.gif", save_as="./payload/" + str(temp_filename) + "_FOM.gif", resize_to=None, magnitude=5)
+
+    print(
+        "Img url: ",
+        str(cred.ngrok_link + "/file/" + str(temp_filename) + "_FOM.gif"),
+    )
+    bot.send_attachment_url(
+        recipient_id,
+        "image",
+        str(cred.ngrok_link + "/file/" + str(temp_filename) + "_FOM.gif"),
+    )
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
