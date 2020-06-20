@@ -28,7 +28,6 @@ Current functionality:
 
 Next steps:
 
-* Even more image editing functions
 * Dialogue flow
 * Error handling
 
@@ -55,6 +54,8 @@ when running the `ngrok` service.
 
 
 ## Model weights & data
+
+Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSfgdFwvH1mZqZ8_vPS6WipB?usp=sharing).
 
 * <i>coco_2017</i> (with subdirectory val2017) placed in <i>./vision/fast_neural_style_transfer/coco_2017</i>
 * <i>maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>

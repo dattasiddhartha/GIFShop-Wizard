@@ -30,7 +30,7 @@ class Bot:
         successful
         """
         data = {"recipient": {"id": recipient_id}, "message": {"text": text}}
-        return send_request(data)
+        return self.send_request(data)
 
     def send_quick_reply(self, recipient_id, text, quick_replies):
         """
@@ -49,7 +49,7 @@ class Bot:
             "recipient": {"id": recipient_id},
             "message": {"text": text, "quick_replies": quick_replies_arr},
         }
-        return send_request(data)
+        return self.send_request(data)
 
     def send_image_url(self, recipient_id, image_url):
         """
@@ -60,7 +60,7 @@ class Bot:
             "recipient": {"id": recipient_id},
             "message": {"attachment": {"type": "image", "payload": {"url": image_url}}},
         }
-        return send_request(data)
+        return self.send_request(data)
 
     # TODO: make this work
     def TODO_send_attachment(self, recipient_id, filename):

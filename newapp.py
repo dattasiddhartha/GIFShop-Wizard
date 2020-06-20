@@ -35,16 +35,16 @@ def process_request():
     """
     global state
     # This route is only for the initial bot verification
-    if request.method is "GET":
+    if request.method == "GET":
         # Facebook requires a verify token to be verified before allowing
         # requests sent in Messenger to be directed to this bot
-        if request.args.get("hub.verify_token") is VERIFY_TOKEN:
+        if request.args.get("hub.verify_token") == VERIFY_TOKEN:
             return request.args.get("hub.challenge")
         else:
             return "Invalid verification token"
 
     # This route is for processing messages sent to the bot
-    if request.method is "POST":
+    if request.method == "POST":
         data = request.get_json()
         responses = []
 
@@ -82,7 +82,7 @@ def begin_processing(recipient_id, message):
     """
     global state
     # If there is more than one attachment, use the first one
-    if message.get("attachments") and message["attachments"][0]["type"] is "image":
+    if message.get("attachments") and message["attachments"][0]["type"] == "image":
         url = message["attachments"][0]["payload"]["url"]
         filetype = get_filetype(url)
 
@@ -98,7 +98,7 @@ def begin_processing(recipient_id, message):
                 state["filetype"] = filetype
 
         # Process GIF
-        elif filetype is "gif":
+        elif filetype == "gif":
             if bot.send_quick_reply(
                 recipient_id,
                 "How would you like to process this GIF?",
@@ -131,7 +131,7 @@ def continue_processing(recipient_id, message):
         text = message["text"].lower()
         # Check if valid option has been provided
         for option, handler in zip(IMAGE_PROCESSING_OPTIONS, IMAGE_PROCESSING_HANDLERS):
-            if text is option:
+            if text == option:
                 if handler(recipient_id):
                     bot.send_image_url(recipient_id, state["url"])
                     bot.send_quick_reply(
