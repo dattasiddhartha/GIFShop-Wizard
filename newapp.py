@@ -5,10 +5,10 @@ from utils.bot import Bot
 
 
 IMAGE_PROCESSING_OPTIONS = [
-    "Fast Style Transfer",
-    "First Order of Motion",
-    "Foreground Removal",
-    "Segmented Style Transfer",
+    "FST",
+    "FOM",
+    "FR",
+    "SST",
     "Finish",
 ]
 IMAGE_PROCESSING_HANDLERS = [
@@ -131,19 +131,29 @@ def continue_processing(recipient_id, message):
         text = message["text"].lower()
         # Check if valid option has been provided
         for option, handler in zip(IMAGE_PROCESSING_OPTIONS, IMAGE_PROCESSING_HANDLERS):
-            if text == option:
+            if text == option.lower():
                 if handler(recipient_id):
-                    bot.send_image_url(recipient_id, state["url"])
-                    bot.send_quick_reply(
-                        recipient_id,
-                        "What would you like to do next?",
-                        IMAGE_PROCESSING_OPTIONS,
-                    )
-                break
+                    if text == "finish":
+                        return "Finished processing"
+                    else:
+                        bot.send_image_url(recipient_id, state["url"])
+                        bot.send_quick_reply(
+                            recipient_id,
+                            "What would you like to do next?",
+                            IMAGE_PROCESSING_OPTIONS,
+                        )
+                        return "Continued processing"
+                else:
+                    return "Failed processing"
         # No valid option was selected
         bot.send_text(recipient_id, "Please send a valid command")
+        bot.send_quick_reply(
+            recipient_id, "Please send a valid command", IMAGE_PROCESSING_OPTIONS,
+        )
     else:
-        bot.send_text(recipient_id, "Please send a command")
+        bot.send_quick_reply(
+            recipient_id, "Please send a command", IMAGE_PROCESSING_OPTIONS,
+        )
     return "Continued processing"
 
 
@@ -184,7 +194,7 @@ def finish(recipient_id):
     Completes image processing and returns whether the operation was successful
     """
     global state
-    if bot.send_text(recipient_id, "Processing complete"):
+    if bot.send_text(recipient_id, "Processing complete and ready for a new image"):
         # Reset the application state
         state = {
             "has_image": False,

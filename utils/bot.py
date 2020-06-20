@@ -22,6 +22,7 @@ class Bot:
         )
         if response.status_code is not 200:
             print(f"[ERROR] {response.status_code} Error")
+            print(f"[ERROR] {response.json}")
         return response.status_code is 200
 
     def send_text(self, recipient_id, text):
@@ -37,17 +38,19 @@ class Bot:
         Sends quick reply to Messenger API and returns whether the operation
         was successful
         """
-        quick_replies_arr = map(
-            lambda quick_reply: {
-                "content_type": "text",
-                "title": quick_reply,
-                "payload": quick_reply.lower(),
-            },
-            quick_replies,
+        quick_replies_list = list(
+            map(
+                lambda quick_reply: {
+                    "content_type": "text",
+                    "title": quick_reply,
+                    "payload": quick_reply.lower(),
+                },
+                quick_replies,
+            )
         )
         data = {
             "recipient": {"id": recipient_id},
-            "message": {"text": text, "quick_replies": quick_replies_arr},
+            "message": {"text": text, "quick_replies": quick_replies_list},
         }
         return self.send_request(data)
 
