@@ -48,7 +48,7 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
     counter = 0
     for filename in filenames:
         FasterStyleTransfer(
-            "./vision/fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth",
+            "./vision/fast_neural_style_transfer/models/mosaic_style__1000_iter__vgg19_weights.pth",
             filename,
             styled_dir + "/" + str(unique_filename) + "_FST_" + str(counter) + "_.png",
         )
@@ -61,7 +61,7 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
     images = []
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
-    imageio.mimsave(str(orig_dir + "_FST.gif").replace("\\", "/"), images)
+    imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
 
 def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
     # Load frames
@@ -76,7 +76,7 @@ def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
         PartialStyleTransfer(
             mode="styled",
             img_path=filename,
-            style_path="./vision/fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth",
+            style_path="./vision/fast_neural_style_transfer/models/mosaic_style__1000_iter__vgg19_weights.pth",
         )
         counter += 1
 
@@ -89,7 +89,7 @@ def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
     images = []
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
-    imageio.mimsave(str(orig_dir + "_MASK+FST.gif").replace("\\", "/"), images)
+    imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
 
 def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
     # Load frames
@@ -116,7 +116,7 @@ def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
     images = []
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
-    imageio.mimsave(str(dir + "_FST.gif").replace("\\", "/"), images)
+    imageio.mimsave(str(dir + ".gif").replace("\\", "/"), images)
 
 def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
     # Load frames
@@ -141,4 +141,4 @@ def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
     images = []
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
-    imageio.mimsave(str(orig_dir + "_FR.gif").replace("\\", "/"), images)
+    imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)

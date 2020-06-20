@@ -9,7 +9,7 @@
 <img src="vision/fast_neural_style_transfer/videos/FST.gif?raw=true" height="200px"></img>
 <img src="vision/fast_neural_style_transfer/videos/gif.gif?raw=true" height="200px"></img>
 
-Submission for Facebook Hackathon 2020 (Messenger).
+Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](m.me/104902671262259)
 
 Implementing based on [functional
 requirements](https://docs.google.com/document/d/1T6mk4aypOCCCxcz2EJtfLNoait8uimbkMFGiEmzRvdg/edit).
