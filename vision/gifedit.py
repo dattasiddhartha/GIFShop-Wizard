@@ -38,7 +38,15 @@ def stitchImages(dir, filename):
     imageio.mimsave(str(dir + "_new.gif").replace("\\", "/"), images)
 
 
-def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
+def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename, style):
+
+    # Pass in single word to use default weights file
+    # Pass in relative path to use custom weights file
+    if len(style.split("/")) == 1:
+        weights_path = "./vision/fast_neural_style_transfer/models/" + str(style).lower().replace(" ", "_")+".pth"
+    if len(style.split("/")) > 1:
+        weights_path = style
+
     # Load frames
     filenames = []
     for f in glob.iglob(orig_dir + "/*"):
@@ -48,7 +56,7 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
     counter = 0
     for filename in filenames:
         FasterStyleTransfer(
-            "./vision/fast_neural_style_transfer/models/mosaic_style__1000_iter__vgg19_weights.pth",
+            weights_path,
             filename,
             styled_dir + "/" + str(unique_filename) + "_FST_" + str(counter) + "_.png",
         )
@@ -63,7 +71,15 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename):
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
 
-def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
+def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename, style):
+
+    # Pass in single word to use default weights file
+    # Pass in relative path to use custom weights file
+    if len(style.split("/")) == 1:
+        weights_path = "./vision/fast_neural_style_transfer/models/" + str(style).lower().replace(" ", "_")+".pth"
+    if len(style.split("/")) > 1:
+        weights_path = style
+
     # Load frames
     filenames = []
     for f in glob.iglob(orig_dir + "/*"):
@@ -76,7 +92,7 @@ def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename):
         PartialStyleTransfer(
             mode="styled",
             img_path=filename,
-            style_path="./vision/fast_neural_style_transfer/models/mosaic_style__1000_iter__vgg19_weights.pth",
+            style_path=weights_path,
         )
         counter += 1
 
