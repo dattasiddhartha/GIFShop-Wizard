@@ -4,9 +4,10 @@ from PIL import Image
 import numpy as np
 from vision.faststyletransfer_train import FastStyleTransfer
 from vision.faststyletransfer_eval import FasterStyleTransfer
-from vision.segmentedstyletransfer import PartialStyleTransfer
-from vision.firstordermotion import FirstOrderMotion
-from vision.foregroundremoval import ForeGroundRemoval
+
+# from vision.segmentedstyletransfer import PartialStyleTransfer
+# from vision.firstordermotion import FirstOrderMotion
+# from vision.foregroundremoval import ForeGroundRemoval
 from vision import compress
 
 
@@ -43,7 +44,11 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename, style):
     # Pass in single word to use default weights file
     # Pass in relative path to use custom weights file
     if len(style.split("/")) == 1:
-        weights_path = "./vision/fast_neural_style_transfer/models/" + str(style).lower().replace(" ", "_")+".pth"
+        weights_path = (
+            "./vision/fast_neural_style_transfer/models/"
+            + str(style).lower().replace(" ", "_")
+            + ".pth"
+        )
     if len(style.split("/")) > 1:
         weights_path = style
 
@@ -71,12 +76,17 @@ def stitch_FST_Images_ServerStyle(orig_dir, styled_dir, unique_filename, style):
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
 
+
 def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename, style):
 
     # Pass in single word to use default weights file
     # Pass in relative path to use custom weights file
     if len(style.split("/")) == 1:
-        weights_path = "./vision/fast_neural_style_transfer/models/" + str(style).lower().replace(" ", "_")+".pth"
+        weights_path = (
+            "./vision/fast_neural_style_transfer/models/"
+            + str(style).lower().replace(" ", "_")
+            + ".pth"
+        )
     if len(style.split("/")) > 1:
         weights_path = style
 
@@ -90,9 +100,7 @@ def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename, style):
     for filename in filenames:
         # PartialStyleTransfer(mode = 'color', img_path=filename, style_path="./fast_neural_style_transfer/models/mosaic_style__200_iter__vgg19_weights.pth")
         PartialStyleTransfer(
-            mode="styled",
-            img_path=filename,
-            style_path=weights_path,
+            mode="styled", img_path=filename, style_path=weights_path,
         )
         counter += 1
 
@@ -106,6 +114,7 @@ def stitch_partialFST_Images_ServerStyle(orig_dir, unique_filename, style):
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
+
 
 def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
     # Load frames
@@ -134,6 +143,7 @@ def stitch_FST_Images_ClientStyle(orig_dir, styled_dir, unique_filename):
         images.append(imageio.imread(filename))
     imageio.mimsave(str(dir + ".gif").replace("\\", "/"), images)
 
+
 def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
     # Load frames
     filenames = []
@@ -144,9 +154,14 @@ def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
     counter = 0
     for filename in filenames:
         ForeGroundRemoval(
-            input_path = filename, 
-            objects = objects, 
-            export_path = styled_dir + "/" + str(unique_filename) + "_FR_" + str(counter) + "_.png",
+            input_path=filename,
+            objects=objects,
+            export_path=styled_dir
+            + "/"
+            + str(unique_filename)
+            + "_FR_"
+            + str(counter)
+            + "_.png",
         )
         counter += 1
 

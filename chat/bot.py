@@ -22,7 +22,7 @@ class Bot:
         )
         if response.status_code is not 200:
             print(f"[ERROR] {response.status_code} Error")
-            print(f"[ERROR] {response.json}")
+            print(f"[ERROR] {response.json()}")
         return response.status_code is 200
 
     def send_text(self, recipient_id, text):
