@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, send_file
 from urllib.request import urlretrieve
 from uuid import uuid4
-import os, shutil
+import os, shutil, torch, glob
 
 from chat.bot import Bot
 from credentials import ngrok_link, ACCESS_TOKEN, VERIFY_TOKEN
@@ -19,20 +19,17 @@ FAKE_MOTION_OPTIONS = [
     "Obama",
     "Trump",
 ]
-#OBJECT_REMOVAL_OPTIONS = [
-#    "Option 1",
-#    "Option 2",
-#    "Option 3",
-#    "Option 4",
-#    "Option 5",
-#]
 SEGMENTED_ST_OPTIONS = [
     "Candy",
     "Mosaic",
     "Picasso",
     "Rain Princess",
     "Starry Night",
-    "Tripping Balls",
+    "Tripping",
+    "Spaghetti",
+    "Chocolate Cake",
+    "Lasagna",
+    "Bibimbap",
 ]
 STYLE_TRANSFER_OPTIONS = [
     "Candy",
@@ -40,7 +37,11 @@ STYLE_TRANSFER_OPTIONS = [
     "Picasso",
     "Rain Princess",
     "Starry Night",
-    "Tripping Balls",
+    "Tripping",
+    "Spaghetti",
+    "Chocolate Cake",
+    "Lasagna",
+    "Bibimbap",
 ]
 IMAGE_PROCESSING_OPTIONS = [
     "Fake Motion",
@@ -143,6 +144,8 @@ def continue_processing(recipient_id, message):
     # object detection
     objects_gif_arguments, OBJECT_REMOVAL_OPTIONS = GIFObjectDetection("./payload/" + str(state["uuid"]))
     print("List of objects in GIF: ", OBJECT_REMOVAL_OPTIONS)
+    torch.cuda.empty_cache()
+    # OBJECT_REMOVAL_OPTIONS = ["test"]
 
     if message.get("text"):
         text = message["text"].lower()
@@ -185,10 +188,21 @@ def continue_processing(recipient_id, message):
                 res_url = segmented_style_transfer(state, text.replace(" ", "_"))
                 state["selected_option"] = None
                 if os.path.exists("./payload/FST_" + str(state["uuid"])):
-                    integ_check_fst = len(os.listdir("./payload/FST_" + str(state["uuid"]))); integ_check_orig = len(os.listdir("./payload/" + str(state["uuid"])))
-                    print("Send link if match: ", integ_check_fst, integ_check_orig)
-                    if integ_check_fst > 0:
-                        if integ_check_fst == integ_check_orig:
+                    filenames_ST = []
+                    for f in glob.iglob("./payload/" + str(state["uuid"]) + "/*"):
+                        if str(state["uuid"]) in f:
+                            if "_MASK+FST.png" in f:
+                                filenames_ST.append(f)
+                    filenames = []
+                    for f in glob.iglob("./payload/" + str(state["uuid"]) + "/*"):
+                        if str(state["uuid"]) in f:
+                            if "_MASK+FST.png" not in f:
+                                if "_MASK.png" not in f:
+                                    if "_FST.png" not in f:
+                                        filenames.append(f)
+                    print(len(filenames_ST), len(filenames))
+                    if len(filenames_ST) > 0:
+                        if len(filenames_ST) == len(filenames):
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
                             shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)

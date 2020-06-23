@@ -80,7 +80,12 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 | picasso      | picasso     | 1000       |
 | rain princess      | rain princess     | 1000       |
 | starry night      | starry night     | 1000       |
-| Tripping balls | mosaic     | 200        |
+| tripping | mosaic     | 200        |
+| spaghetti | spaghetti     | 10000        |
+| chocolate cake | chocolate cake     | 200        |
+| lasagna | lasagna     | 200        |
+| bibimbap | bibimbap     | 200        |
+
 
 ### Warnings:
 
@@ -88,3 +93,5 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
   they or their history contain
 * When uploading repo files, be careful with tokens / secrets [might be best to
   create a separate repo later]
+* Network latencies: We compress the GIF (<=1.0MB) to minimize latencies in image sending to user
+* GPU memory limits: There is a theoretical limit to the number of consecutive permutations users can perform on a single image. Even after clearing cache, there is residuals left over in memory.
