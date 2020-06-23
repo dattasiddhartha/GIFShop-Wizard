@@ -15,7 +15,7 @@ Computer vision has been left out of the hands of many photoshopping enthusiasts
 <img src="vision/foreground_removal/input/before.jpg?raw=true" height="400px"></img>
 <img src="vision/foreground_removal/input/after.jpg?raw=true" height="400px"></img>
 
-Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](m.me/104902671262259)
+Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](https://m.me/104902671262259)
 
 <!--Implementing based on [functional
 requirements](https://docs.google.com/document/d/1T6mk4aypOCCCxcz2EJtfLNoait8uimbkMFGiEmzRvdg/edit).-->
@@ -26,12 +26,12 @@ Current functionality:
 * Quick replies
 * Receive user GIF as payload url, and can successfully reply back the same GIF
   (parsing GIFs & modifying them)
-* Fast Style Transfer (we store pretrained styles to be applied to user input images)
+* Fast Style Transfer (we store pretrained styles to be applied to user input images) [[paper]](https://arxiv.org/abs/1603.08155) [[code]](https://github.com/ceshine/fast-neural-style)
 * Segmented Style Transfer (we apply instance segmentation to images and apply
-  FST to those segments only)
-* CycleGAN (i.e. stylize specific objects and components of a scene)
-* First Order of Motion (i.e. DeepFakes, as long as driver video and content image are cropped in shape enough)
-* Foreground Removal (i.e. remove certain objects in images)
+  FST to those segments only) [[paper]](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Long_Fully_Convolutional_Networks_2015_CVPR_paper.pdf) [[code]](https://github.com/spmallick/learnopencv)
+* CycleGAN (i.e. stylize specific objects and components of a scene) [[paper]](https://arxiv.org/abs/1703.10593) [[code]](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix)
+* First Order of Motion (i.e. DeepFakes, as long as driver video and content image are cropped in shape enough) [[paper]](https://papers.nips.cc/paper/8935-first-order-motion-model-for-image-animation) [[code]](https://github.com/AliaksandrSiarohin/first-order-model)
+* Foreground Removal (i.e. remove certain objects in images) [[paper]](https://arxiv.org/abs/2004.10934) [[code]](https://github.com/javirk/Person_remover)
 * Supports both static images and GIFs
 * Dialogue flow
 * Error handling
