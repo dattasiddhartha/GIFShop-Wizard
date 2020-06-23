@@ -5,6 +5,7 @@ import os, shutil, torch, glob
 
 from chat.bot import Bot
 from credentials import ngrok_link, ACCESS_TOKEN, VERIFY_TOKEN
+
 from vision.gifedit import extractFrames, GIFObjectDetection
 from vision import compress
 from vision.methods import (
@@ -19,17 +20,10 @@ FAKE_MOTION_OPTIONS = [
     "Obama",
     "Trump",
 ]
-SEGMENTED_ST_OPTIONS = [
-    "Candy",
-    "Mosaic",
-    "Picasso",
-    "Rain Princess",
-    "Starry Night",
-    "Tripping",
-    "Spaghetti",
-    "Chocolate Cake",
-    "Lasagna",
-    "Bibimbap",
+FAKE_MOTION_IMAGES = [
+    "https://upload.wikimedia.org/wikipedia/commons/8/8d/Vladimir_Putin_%282020-02-20%29.jpg",
+    "https://will.illinois.edu/images/uploads/50405/president_barack_obama.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg",
 ]
 STYLE_TRANSFER_OPTIONS = [
     "Candy",
@@ -42,6 +36,42 @@ STYLE_TRANSFER_OPTIONS = [
     "Chocolate Cake",
     "Lasagna",
     "Bibimbap",
+]
+STYLE_TRANSFER_IMAGES = [
+    "https://inews.gtimg.com/newsapp_match/0/10560893188/0",
+    "https://images.deepai.org/converted-papers/1906.01123/images/qualitive1/style_2.jpg",
+    "https://www.stunewsnewport.com/images/editorial/jan2/CubismLRG.jpg",
+    "https://d2halst20r4hcy.cloudfront.net/wallpapers2/079/340/083/456/original/file.jpg",
+    "https://bsaber.com/wp-content/uploads/2020/01/49352bc094b7e66f706b5671d5da669a6266964d.jpg",
+    "https://10mosttoday.com/wp-content/uploads/2014/12/Vincent_van_Gogh_self_portrait.jpg",
+    "https://pic1.zhimg.com/v2-d82300aae5b1fd5f7303b057abca8a41_200x112.jpg",
+    "https://1.bp.blogspot.com/-UMnqX3NZWxo/XX8I0MhluCI/AAAAAAAAADA/MoU7Mi8jp1Ejrsvf7bBLAuUNWOovdJP4QCLcBGAsYHQ/s1600/202685_0-803-5447-5447.jpg",
+    "https://www.receiteria.com.br/wp-content/uploads/receitas-com-queijo-mussarela-0-1200x738.jpg",
+    "https://asian-recipe.com/wp-content/uploads/2017/11/bibimbap-mixed-rice-1200x900.jpg",
+]
+SEGMENTED_ST_OPTIONS = [
+    "Candy",
+    "Mosaic",
+    "Picasso",
+    "Rain Princess",
+    "Starry Night",
+    "Tripping",
+    "Spaghetti",
+    "Chocolate Cake",
+    "Lasagna",
+    "Bibimbap",
+]
+SEGMENTED_ST_IMAGES = [
+    "https://inews.gtimg.com/newsapp_match/0/10560893188/0",
+    "https://images.deepai.org/converted-papers/1906.01123/images/qualitive1/style_2.jpg",
+    "https://www.stunewsnewport.com/images/editorial/jan2/CubismLRG.jpg",
+    "https://d2halst20r4hcy.cloudfront.net/wallpapers2/079/340/083/456/original/file.jpg",
+    "https://bsaber.com/wp-content/uploads/2020/01/49352bc094b7e66f706b5671d5da669a6266964d.jpg",
+    "https://10mosttoday.com/wp-content/uploads/2014/12/Vincent_van_Gogh_self_portrait.jpg",
+    "https://pic1.zhimg.com/v2-d82300aae5b1fd5f7303b057abca8a41_200x112.jpg",
+    "https://1.bp.blogspot.com/-UMnqX3NZWxo/XX8I0MhluCI/AAAAAAAAADA/MoU7Mi8jp1Ejrsvf7bBLAuUNWOovdJP4QCLcBGAsYHQ/s1600/202685_0-803-5447-5447.jpg",
+    "https://www.receiteria.com.br/wp-content/uploads/receitas-com-queijo-mussarela-0-1200x738.jpg",
+    "https://asian-recipe.com/wp-content/uploads/2017/11/bibimbap-mixed-rice-1200x900.jpg",
 ]
 IMAGE_PROCESSING_OPTIONS = [
     "Fake Motion",
@@ -135,14 +165,16 @@ def continue_processing(recipient_id, message):
     """
     global state
 
-    # frame extraction
+    # Frame extraction
     os.makedirs(os.path.join(os.getcwd(), "payload", state["uuid"]), exist_ok=True)
     extractFrames(
         os.path.join(os.getcwd(), "payload", f"{state['uuid']}.gif"),
         os.path.join(os.getcwd(), "payload", state["uuid"]),
     )
-    # object detection
-    objects_gif_arguments, OBJECT_REMOVAL_OPTIONS = GIFObjectDetection("./payload/" + str(state["uuid"]))
+    # Object detection
+    objects_gif_arguments, OBJECT_REMOVAL_OPTIONS = GIFObjectDetection(
+        "./payload/" + str(state["uuid"])
+    )
     print("List of objects in GIF: ", OBJECT_REMOVAL_OPTIONS)
     torch.cuda.empty_cache()
     # OBJECT_REMOVAL_OPTIONS = ["test"]
@@ -164,18 +196,31 @@ def continue_processing(recipient_id, message):
         elif state["selected_option"] == "object removal":
             if text in map(lambda x: x.lower(), OBJECT_REMOVAL_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
-                objects = [objects_gif_arguments[OBJECT_REMOVAL_OPTIONS.index(text.replace(" ", "_"))]]
+                objects = [
+                    objects_gif_arguments[
+                        OBJECT_REMOVAL_OPTIONS.index(text.replace(" ", "_"))
+                    ]
+                ]
                 res_url = foreground_removal(state, objects)
                 state["selected_option"] = None
                 if os.path.exists("./payload/FR_" + str(state["uuid"])):
-                    integ_check_fst = len(os.listdir("./payload/FR_" + str(state["uuid"]))); integ_check_orig = len(os.listdir("./payload/" + str(state["uuid"])))
+                    integ_check_fst = len(
+                        os.listdir("./payload/FR_" + str(state["uuid"]))
+                    )
+                    integ_check_orig = len(
+                        os.listdir("./payload/" + str(state["uuid"]))
+                    )
                     print("Send link if match: ", integ_check_fst, integ_check_orig)
                     if integ_check_fst > 0:
                         if integ_check_fst == integ_check_orig:
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
-                            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
-                            shutil.rmtree("./payload/FR_" + str(state["uuid"]), ignore_errors=True)
+                            shutil.rmtree(
+                                "./payload/" + str(state["uuid"]), ignore_errors=True
+                            )
+                            shutil.rmtree(
+                                "./payload/FR_" + str(state["uuid"]), ignore_errors=True
+                            )
                             bot.send_quick_reply(
                                 recipient_id,
                                 "Select the next process to run",
@@ -205,8 +250,13 @@ def continue_processing(recipient_id, message):
                         if len(filenames_ST) == len(filenames):
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
-                            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
-                            shutil.rmtree("./payload/FST_" + str(state["uuid"]), ignore_errors=True)
+                            shutil.rmtree(
+                                "./payload/" + str(state["uuid"]), ignore_errors=True
+                            )
+                            shutil.rmtree(
+                                "./payload/FST_" + str(state["uuid"]),
+                                ignore_errors=True,
+                            )
                             bot.send_quick_reply(
                                 recipient_id,
                                 "Select the next process to run",
@@ -219,14 +269,24 @@ def continue_processing(recipient_id, message):
                 res_url = fast_style_transfer(state, text.replace(" ", "_"))
                 state["selected_option"] = None
                 if os.path.exists("./payload/FST_" + str(state["uuid"])):
-                    integ_check_fst = len(os.listdir("./payload/FST_" + str(state["uuid"]))); integ_check_orig = len(os.listdir("./payload/" + str(state["uuid"])))
+                    integ_check_fst = len(
+                        os.listdir("./payload/FST_" + str(state["uuid"]))
+                    )
+                    integ_check_orig = len(
+                        os.listdir("./payload/" + str(state["uuid"]))
+                    )
                     print("Send link if match: ", integ_check_fst, integ_check_orig)
                     if integ_check_fst > 0:
                         if integ_check_fst == integ_check_orig:
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
-                            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
-                            shutil.rmtree("./payload/FST_" + str(state["uuid"]), ignore_errors=True)
+                            shutil.rmtree(
+                                "./payload/" + str(state["uuid"]), ignore_errors=True
+                            )
+                            shutil.rmtree(
+                                "./payload/FST_" + str(state["uuid"]),
+                                ignore_errors=True,
+                            )
                             bot.send_quick_reply(
                                 recipient_id,
                                 "Select the next process to run",
@@ -249,9 +309,12 @@ def continue_processing(recipient_id, message):
             # Handle all the other options
             elif text in map(lambda x: x.lower(), IMAGE_PROCESSING_OPTIONS):
                 state["selected_option"] = text
-                # Programmatically determine which constant to use
+                # Programmatically determine which constants to use
                 options = eval(f"{text.upper()} OPTIONS".replace(" ", "_"))
-                bot.send_quick_reply(recipient_id, "Select an option to apply", options)
+                src_images = eval(f"{text.upper()} IMAGES".replace(" ", "_"))
+                bot.send_quick_reply(
+                    recipient_id, "Select an option to apply", options, src_images
+                )
                 return "Continued processing"
 
     # If we are here then it means an invalid command was sent

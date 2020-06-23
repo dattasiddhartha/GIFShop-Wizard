@@ -33,21 +33,34 @@ class Bot:
         data = {"recipient": {"id": recipient_id}, "message": {"text": text}}
         return self.send_request(data)
 
-    def send_quick_reply(self, recipient_id, text, quick_replies):
+    def send_quick_reply(self, recipient_id, text, quick_replies, src_images=None):
         """
         Sends quick reply to Messenger API and returns whether the operation
         was successful
         """
-        quick_replies_list = list(
-            map(
-                lambda quick_reply: {
-                    "content_type": "text",
-                    "title": quick_reply,
-                    "payload": quick_reply.lower(),
-                },
-                quick_replies,
+        if src_images:
+            quick_replies_list = list(
+                map(
+                    lambda x: {
+                        "content_type": "text",
+                        "title": x[0],
+                        "payload": x[0].lower(),
+                        "image_url": x[1],
+                    },
+                    zip(quick_replies, src_images),
+                )
             )
-        )
+        else:
+            quick_replies_list = list(
+                map(
+                    lambda quick_reply: {
+                        "content_type": "text",
+                        "title": quick_reply,
+                        "payload": quick_reply.lower(),
+                    },
+                    quick_replies,
+                )
+            )
         data = {
             "recipient": {"id": recipient_id},
             "message": {"text": text, "quick_replies": quick_replies_list},
