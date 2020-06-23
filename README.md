@@ -68,9 +68,11 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 
 ## Style masks
 
-| Mask name | Source img | iterations | Trained against |
-| Shroom Trip | mosaic | 200 | vgg |
-| mosaic | mosaic | 1000 | vgg |
+| Mask name   | Source img | Iterations |
+|-------------|------------|------------|
+| Shroom Trip | mosaic     | 200        |
+| mosaic      | mosaic     | 1000       |
+
 
 ### Warnings:
 
