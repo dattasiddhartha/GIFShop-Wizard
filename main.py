@@ -184,6 +184,7 @@ def continue_processing(recipient_id, message):
         if state["selected_option"] == "fake motion":
             if text in map(lambda x: x.lower(), FAKE_MOTION_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
+                bot.send_typing_on(recipient_id)
                 res_url = first_order_of_motion(state, text.replace(" ", "_"))
                 state["selected_option"] = None
                 bot.send_image_url(recipient_id, res_url)
@@ -201,6 +202,7 @@ def continue_processing(recipient_id, message):
                         OBJECT_REMOVAL_OPTIONS.index(text.replace(" ", "_"))
                     ]
                 ]
+                bot.send_typing_on(recipient_id)
                 res_url = foreground_removal(state, objects)
                 state["selected_option"] = None
                 if os.path.exists("./payload/FR_" + str(state["uuid"])):
@@ -230,6 +232,7 @@ def continue_processing(recipient_id, message):
         elif state["selected_option"] == "segmented st":
             if text in map(lambda x: x.lower(), SEGMENTED_ST_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
+                bot.send_typing_on(recipient_id)
                 res_url = segmented_style_transfer(state, text.replace(" ", "_"))
                 state["selected_option"] = None
                 if os.path.exists("./payload/FST_" + str(state["uuid"])):
@@ -266,6 +269,7 @@ def continue_processing(recipient_id, message):
         elif state["selected_option"] == "style transfer":
             if text in map(lambda x: x.lower(), STYLE_TRANSFER_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
+                bot.send_typing_on(recipient_id)
                 res_url = fast_style_transfer(state, text.replace(" ", "_"))
                 state["selected_option"] = None
                 if os.path.exists("./payload/FST_" + str(state["uuid"])):

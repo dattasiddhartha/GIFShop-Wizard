@@ -78,6 +78,17 @@ class Bot:
         }
         return self.send_request(data)
 
+    def send_typing_on(self, recipient_id):
+        """
+        Sends `typing_on' user action to Messenger API and returns whether the
+        operation was successful
+        """
+        data = {
+            "recipient": {"id": recipient_id},
+            "sender_action": "typing_on",
+        }
+        return self.send_request(data)
+
     # TODO: make this work
     def TODO_send_attachment(self, recipient_id, filename):
         data = json.dumps(
