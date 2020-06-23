@@ -1,51 +1,53 @@
 # GIFShop Wizard
 
-*Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/), [Jacky Lee](https://github.com/grenmester)
+*Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/),
+[Jacky Lee](https://github.com/grenmester)
 
-<!--<img src="vision/first_order_motion/output/R3S6U3_FOM.gif?raw=true" height="200px"></img> -->
-<!--<img src="vision/fast_neural_style_transfer/videos/DZ1BJU_FST.gif?raw=true" height="200px"></img>-->
+Submission for the 2020 Facebook Messaging Hackathon
+
+Live Demo: [https://m.me/104902671262259](https://m.me/104902671262259)
 
 <img src="vision/first_order_motion/output/FOM.gif?raw=true" height="150px"></img>
 <img src="vision/cycle_gan/datasets/zebra.gif?raw=true" height="150px"></img>
 <img src="vision/fast_neural_style_transfer/videos/FST.gif?raw=true" height="150px"></img>
 <img src="vision/fast_neural_style_transfer/videos/gif.gif?raw=true" height="150px"></img>
 
-Computer vision has been left out of the hands of many photoshopping enthusiasts and chatbot users alike. Our mission is to bring automated GIF-editing functionality to the masses with GIFShop Wizard. 
+## Overview
+
+Computer vision has been left out of the hands of many photoshopping
+enthusiasts and chatbot users alike. Our mission is to bring automated
+GIF-editing functionality to the masses with GIFShop Wizard.
 
 <img src="vision/foreground_removal/input/before.jpg?raw=true" height="400px"></img>
 <img src="vision/foreground_removal/input/after.jpg?raw=true" height="400px"></img>
 
-Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](https://m.me/104902671262259)
+Current features and functionality:
 
-<!--Implementing based on [functional
-requirements](https://docs.google.com/document/d/1T6mk4aypOCCCxcz2EJtfLNoait8uimbkMFGiEmzRvdg/edit).-->
+* Integration with Messenger API and Webhooks
+* Quick Replies and Sender Actions
+* Dialogue flow and state management
+* Error handling and fallback options
+* GIF disassembly and reassembly
 
-Current functionality:
-
-* Receive messages from user, replies with text (non-NLP)
-* Quick replies
-* Receive user GIF as payload url, and can successfully reply back the same GIF
-  (parsing GIFs & modifying them)
-* Fast Style Transfer (we store pretrained styles to be applied to user input images) [[paper]](https://arxiv.org/abs/1603.08155) [[code]](https://github.com/ceshine/fast-neural-style)
-* Segmented Style Transfer (we apply instance segmentation to images and apply
-  FST to those segments only) [[paper]](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Long_Fully_Convolutional_Networks_2015_CVPR_paper.pdf) [[code]](https://github.com/spmallick/learnopencv)
-* CycleGAN (i.e. stylize specific objects and components of a scene) [[paper]](https://arxiv.org/abs/1703.10593) [[code]](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix)
-* First Order of Motion (i.e. DeepFakes, as long as driver video and content image are cropped in shape enough) [[paper]](https://papers.nips.cc/paper/8935-first-order-motion-model-for-image-animation) [[code]](https://github.com/AliaksandrSiarohin/first-order-model)
-* Foreground Removal (i.e. remove certain objects in images) [[paper]](https://arxiv.org/abs/2004.10934) [[code]](https://github.com/javirk/Person_remover)
-* Supports both static images and GIFs
-* Dialogue flow
-* Error handling
+* First Order of Motion :: DeepFakes, as long as driver video and content image
+  are cropped in shape enough
+* Foreground Removal :: remove certain objects in images
+* Fast Style Transfer :: apply pretrained styles to user input images
+* CycleGAN :: stylize specific objects and components of a scene
+* Segmented Style Transfer :: apply instance segmentation to images and apply
+  FST to those segments only
 
 ## Usage
 
 Make sure you first update your credentials in the `credentials.py` file.
-```
+
+``` python
 ACCESS_TOKEN = "enter your access token provided by Facebook"
 VERIFY_TOKEN = "enter your personalized verify token"
 ngrok_link = "your custom ngrok callback url"
 ```
 
-Run the chatbot with the following command.
+Run the Messenger bot with the following command.
 
 ```bash
 python serve.py
@@ -56,37 +58,59 @@ Remember to update the [Messenger
 Webhook](https://developers.facebook.com/apps/309273736750794/messenger/settings/)
 when running the `ngrok` service.
 
+## Additional Information
 
-## Model weights & data
+### Model Weights
 
-Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSfgdFwvH1mZqZ8_vPS6WipB?usp=sharing).
+Download weights from
+[here](https://drive.google.com/drive/folders/1ANqflh1dxSfgdFwvH1mZqZ8_vPS6WipB?usp=sharing).
 
-* <i>coco_2017</i> (with subdirectory val2017) placed in <i>./vision/fast_neural_style_transfer/coco_2017</i>
-* <i>maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>
-* <i>vgg16-397923af.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>
-* <i>vgg19-dcbb9e9d.pth</i> placed in <i>C:/Users/YOUR_COMPUTER/.cache/torch/checkpoints/</i>
-* <i>vox-cpk.pth.tar</i> placed in <i>./vision/first_order_motion/</i>
-* <i>pix2pix/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
-* <i>yolo/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
-* <i>cycle_gan/checkpoints</i> placed in <i>./vision/</i>
+* `coco_2017` (with subdirectory val2017) placed in `vision/fast_neural_style_transfer/coco_2017/`
+* `maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth` placed in `~/.cache/torch/checkpoints/`
+* `vgg16-397923af.pth` placed in `~/.cache/torch/checkpoints/`
+* `vgg19-dcbb9e9d.pth` placed in `~/.cache/torch/checkpoints/`
+* `vox-cpk.pth.tar` placed in `vision/first_order_motion/`
+* `pix2pix/checkpoints` placed in `vision/foreground_removal/`
+* `yolo/checkpoints` placed in `vision/foreground_removal/`
+* `cycle_gan/checkpoints` placed in `vision/`
 
-## Style masks
+### Style Masks
 
-| mask name   | source img | iterations |
-|-------------|------------|------------|
-| mosaic      | mosaic     | 1000       |
-| candy      | candy     | 1000       |
-| picasso      | picasso     | 1000       |
-| rain princess      | rain princess     | 1000       |
-| starry night      | starry night     | 1000       |
-| tripping | mosaic     | 200        |
-| spaghetti | spaghetti     | 10000        |
-| chocolate cake | chocolate cake     | 200        |
-| lasagna | lasagna     | 200        |
-| bibimbap | bibimbap     | 200        |
+| mask name      | source img     | iterations |
+|----------------|----------------|------------|
+| mosaic         | mosaic         | 1000       |
+| candy          | candy          | 1000       |
+| picasso        | picasso        | 1000       |
+| rain princess  | rain princess  | 1000       |
+| starry night   | starry night   | 1000       |
+| tripping       | mosaic         | 200        |
+| spaghetti      | spaghetti      | 10000      |
+| chocolate cake | chocolate cake | 200        |
+| lasagna        | lasagna        | 200        |
+| bibimbap       | bibimbap       | 200        |
 
+### Warnings
 
-### Warnings:
+* Network latencies: we compress the GIF (<=1.0MB) to minimize latencies in
+  image sending to users
+* GPU memory limits: there is a theoretical limit to the number of consecutive
+  permutations users can perform on a single image; even after clearing cache,
+  there is residuals left over in memory
 
-* Network latencies: We compress the GIF (<=1.0MB) to minimize latencies in image sending to user
-* GPU memory limits: There is a theoretical limit to the number of consecutive permutations users can perform on a single image. Even after clearing cache, there is residuals left over in memory.
+## References
+
+* First Order of Motion
+  [[paper]](https://papers.nips.cc/paper/8935-first-order-motion-model-for-image-animation)
+  [[code]](https://github.com/AliaksandrSiarohin/first-order-model)
+* Foreground Removal
+  [[paper]](https://arxiv.org/abs/2004.10934)
+  [[code]](https://github.com/javirk/Person\_remover)
+* Fast Style Transfer
+  [[paper]](https://arxiv.org/abs/1603.08155)
+  [[code]](https://github.com/ceshine/fast-neural-style)
+* CycleGAN
+  [[paper]](https://arxiv.org/abs/1703.10593)
+  [[code]](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix)
+* Segmented Style Transfer
+  [[paper]](https://www.cv-foundation.org/openaccess/content\_cvpr\_2015/papers/Long\_Fully\_Convolutional\_Networks\_2015\_CVPR\_paper.pdf)
+  [[code]](https://github.com/spmallick/learnopencv)
