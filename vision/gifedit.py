@@ -12,7 +12,6 @@ from vision.foregroundremoval import ForeGroundRemoval, ObjectDetection
 from vision.cyclegan import CYCLEGAN
 
 
-
 def extractFrames(inGif, outFolder):
     frame = Image.open(inGif)
     nframes = 0
@@ -176,16 +175,22 @@ def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
 
+
 def stitch_CGAN(orig_dir, unique_filename, destination_style):
 
     CYCLEGAN(
-        destination_style=destination_style, 
-        source_image=orig_dir, 
-        uniqueID=str(unique_filename),   
+        destination_style=destination_style,
+        source_image=orig_dir,
+        uniqueID=str(unique_filename),
     )
 
     filenames = []
-    for f in glob.iglob("./vision/cycle_gan/results/"+str(destination_style)+"/test_latest/images/" + "/*"):
+    for f in glob.iglob(
+        "./vision/cycle_gan/results/"
+        + str(destination_style)
+        + "/test_latest/images/"
+        + "/*"
+    ):
         if str(unique_filename) in str(f).split("\\")[1].split("."):
             if "fake.png" in str(f).split("_"):
                 filenames.append(f)
@@ -206,12 +211,15 @@ def GIFObjectDetection(orig_dir):
         filenames.append(f)
 
     # apply style transfer to each frame
-    complete_list=[[], []]
+    complete_list = [[], []]
     for filename in filenames:
-        frame_objects_indices, frame_objects_names = ObjectDetection(input_path = filename)
+        frame_objects_indices, frame_objects_names = ObjectDetection(
+            input_path=filename
+        )
         for i in range(len(frame_objects_indices)):
             complete_list[0].append(frame_objects_indices[i])
             complete_list[1].append(frame_objects_names[i])
     objects_gif_arguments = list(set(complete_list[0]))
     objects_gif_readable = list(set(complete_list[1]))
     return objects_gif_arguments, objects_gif_readable
+

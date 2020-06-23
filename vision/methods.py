@@ -66,7 +66,11 @@ def first_order_of_motion(state, source):
     Peforms first order of motion, updates the state, and returns whether the
     operation was successful
     """
-    source_path="./vision/first_order_motion/data/"+str(source.lower().replace(" ", "_"))+".png"
+    source_path = (
+        "./vision/first_order_motion/data/"
+        + str(source.lower().replace(" ", "_"))
+        + ".png"
+    )
 
     FirstOrderMotion(
         export_path="./payload/" + str(state["uuid"]) + ".gif",
@@ -194,9 +198,9 @@ def cycle_gan(state, style):
     the operation was successful
     """
     stitch_CGAN(
-    orig_dir = "./payload/" + str(state["uuid"]), 
-    unique_filename = str(state["uuid"]), 
-    destination_style = style,
+        orig_dir="./payload/" + str(state["uuid"]),
+        unique_filename=str(state["uuid"]),
+        destination_style=style,
     )
 
     # GIF compression
