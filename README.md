@@ -25,6 +25,7 @@ Current functionality:
   FST to those segments only)
 * First Order of Motion (i.e. DeepFakes, as long as driver video and content image are cropped in shape enough)
 * Foreground Removal
+* Supports both static images and GIFs
 
 Next steps:
 
@@ -65,6 +66,11 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 * <i>pix2pix/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
 * <i>yolo/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
 
+## Style masks
+
+| Mask name | Source img | iterations | Trained against |
+| Shroom Trip | mosaic | 200 | vgg |
+| mosaic | mosaic | 1000 | vgg |
 
 ### Warnings:
 

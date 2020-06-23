@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, request, send_file
 from urllib.request import urlretrieve
 from uuid import uuid4
-import os
+import os, shutil
 
 from chat.bot import Bot
 from credentials import ngrok_link, ACCESS_TOKEN, VERIFY_TOKEN
 from vision.gifedit import extractFrames
+from vision import compress
 from vision.methods import (
     fast_style_transfer,
     #    first_order_of_motion,
@@ -44,8 +45,8 @@ STYLE_TRANSFER_OPTIONS = [
 IMAGE_PROCESSING_OPTIONS = [
     "Fake Motion",
     "Object Removal",
-    "Segmented ST",
     "Style Transfer",
+    "Segmented ST",
     "Finish",
 ]
 
@@ -168,26 +169,42 @@ def continue_processing(recipient_id, message):
         elif state["selected_option"] == "segmented st":
             if text in map(lambda x: x.lower(), SEGMENTED_ST_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
-                # res_url = segmented_style_transfer(state, text.replace(" ", "_"))
+                res_url = segmented_style_transfer(state, text.replace(" ", "_"))
                 state["selected_option"] = None
-                # bot.send_image_url(recipient_id, res_url)
-                bot.send_quick_reply(
-                    recipient_id,
-                    "Select the next process to run",
-                    IMAGE_PROCESSING_OPTIONS,
-                )
+                if os.path.exists("./payload/FST_" + str(state["uuid"])):
+                    integ_check_fst = len(os.listdir("./payload/FST_" + str(state["uuid"]))); integ_check_orig = len(os.listdir("./payload/" + str(state["uuid"])))
+                    print("Send link if match: ", integ_check_fst, integ_check_orig)
+                    if integ_check_fst > 0:
+                        if integ_check_fst == integ_check_orig:
+                            bot.send_image_url(recipient_id, res_url)
+                            print("Link: ", res_url)
+                            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
+                            shutil.rmtree("./payload/FST_" + str(state["uuid"]), ignore_errors=True)
+                            bot.send_quick_reply(
+                                recipient_id,
+                                "Select the next process to run",
+                                IMAGE_PROCESSING_OPTIONS,
+                            )
                 return "Continued processing"
         elif state["selected_option"] == "style transfer":
             if text in map(lambda x: x.lower(), STYLE_TRANSFER_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
                 res_url = fast_style_transfer(state, text.replace(" ", "_"))
                 state["selected_option"] = None
-                bot.send_image_url(recipient_id, res_url)
-                bot.send_quick_reply(
-                    recipient_id,
-                    "Select the next process to run",
-                    IMAGE_PROCESSING_OPTIONS,
-                )
+                if os.path.exists("./payload/FST_" + str(state["uuid"])):
+                    integ_check_fst = len(os.listdir("./payload/FST_" + str(state["uuid"]))); integ_check_orig = len(os.listdir("./payload/" + str(state["uuid"])))
+                    print("Send link if match: ", integ_check_fst, integ_check_orig)
+                    if integ_check_fst > 0:
+                        if integ_check_fst == integ_check_orig:
+                            bot.send_image_url(recipient_id, res_url)
+                            print("Link: ", res_url)
+                            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
+                            shutil.rmtree("./payload/FST_" + str(state["uuid"]), ignore_errors=True)
+                            bot.send_quick_reply(
+                                recipient_id,
+                                "Select the next process to run",
+                                IMAGE_PROCESSING_OPTIONS,
+                            )
                 return "Continued processing"
 
         # No option is currently selected so prompt for an option

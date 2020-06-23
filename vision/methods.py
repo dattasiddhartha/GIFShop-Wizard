@@ -1,18 +1,13 @@
 from credentials import ngrok_link
 import random, os, glob, imageio, pathlib, string, shutil, time
 
+from vision import compress
 from vision.gifedit import (
     stitchImages,
     stitch_FST_Images_ServerStyle,
     stitch_partialFST_Images_ServerStyle,
     stitch_FR,
 )
-
-# from vision.faststyletransfer_train import FastStyleTransfer
-# from vision.faststyletransfer_eval import FasterStyleTransfer
-# from vision.segmentedstyletransfer import PartialStyleTransfer
-# from vision.firstordermotion import FirstOrderMotion
-# from vision.foregroundremoval import ForeGroundRemoval
 
 
 def fast_style_transfer(state, style):
@@ -35,8 +30,6 @@ def fast_style_transfer(state, style):
             ]
         ):
             req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
-            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
-            shutil.rmtree("./payload/FST_" + str(state["uuid"]), ignore_errors=True)
             return req_url
     else:
         if not os.path.exists("./payload/FST_" + str(state["uuid"])):
@@ -171,8 +164,6 @@ def segmented_style_transfer(recipient_id, style):
             ]
         ):
             req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
-            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
-            shutil.rmtree("./payload/FST_" + str(state["uuid"]), ignore_errors=True)
             return req_url
     else:
         if not os.path.exists("./payload/FST_" + str(state["uuid"])):

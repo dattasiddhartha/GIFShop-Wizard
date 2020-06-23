@@ -4,7 +4,6 @@ from PIL import Image
 import numpy as np
 from vision.faststyletransfer_train import FastStyleTransfer
 from vision.faststyletransfer_eval import FasterStyleTransfer
-
 # from vision.segmentedstyletransfer import PartialStyleTransfer
 # from vision.firstordermotion import FirstOrderMotion
 # from vision.foregroundremoval import ForeGroundRemoval
