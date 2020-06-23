@@ -8,6 +8,7 @@ from vision.gifedit import (
     stitch_partialFST_Images_ServerStyle,
     stitch_FR,
 )
+from vision.firstordermotion import FirstOrderMotion
 
 
 def fast_style_transfer(state, style):
@@ -59,15 +60,16 @@ def fast_style_transfer(state, style):
         return req_url
 
 
-def first_order_of_motion(recipient_id):
+def first_order_of_motion(state, source):
     """
     Peforms first order of motion, updates the state, and returns whether the
     operation was successful
     """
-    global state
+    source_path="./vision/first_order_motion/data/"+str(source.lower().replace(" ", "_"))+".png"
+
     FirstOrderMotion(
         export_path="./payload/" + str(state["uuid"]) + ".gif",
-        source_path="./vision/first_order_motion/data/02.png",
+        source_path=source_path,
         driving_path="./payload/" + str(state["uuid"]) + ".gif",
         model_path="./vision/first_order_motion/vox-cpk.pth.tar",
     )
@@ -86,18 +88,16 @@ def first_order_of_motion(recipient_id):
         "Img url: ", req_url,
     )
 
-    time.sleep(3.0)
     shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
 
     return req_url
 
 
-def foreground_removal(recipient_id):
+def foreground_removal(state, objects):
     """
     Peforms foreground removal, updates the state, and returns whether the
     operation was successful
     """
-    global state
     if os.path.exists("./payload/FR_" + str(state["uuid"])):
         if len(
             [
@@ -113,8 +113,6 @@ def foreground_removal(recipient_id):
             ]
         ):
             req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
-            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
-            shutil.rmtree("./payload/FR_" + str(state["uuid"]), ignore_errors=True)
             return req_url
     else:
         if not os.path.exists("./payload/FR_" + str(state["uuid"])):
@@ -143,12 +141,11 @@ def foreground_removal(recipient_id):
         return req_url
 
 
-def segmented_style_transfer(recipient_id, style):
+def segmented_style_transfer(state, style):
     """
     Peforms segmented style transfer, updates the state, and returns whether
     the operation was successful
     """
-    global state
     if os.path.exists("./payload/FST_" + str(state["uuid"])):
         if len(
             [

@@ -5,35 +5,34 @@ import os, shutil
 
 from chat.bot import Bot
 from credentials import ngrok_link, ACCESS_TOKEN, VERIFY_TOKEN
-from vision.gifedit import extractFrames
+from vision.gifedit import extractFrames, GIFObjectDetection
 from vision import compress
 from vision.methods import (
     fast_style_transfer,
-    #    first_order_of_motion,
-    #    foreground_removal,
-    #    segmented_style_transfer,
+    first_order_of_motion,
+    foreground_removal,
+    segmented_style_transfer,
 )
 
 FAKE_MOTION_OPTIONS = [
-    "Option 1",
-    "Option 2",
-    "Option 3",
-    "Option 4",
-    "Option 5",
+    "Putin",
+    "Obama",
+    "Trump",
 ]
-OBJECT_REMOVAL_OPTIONS = [
-    "Option 1",
-    "Option 2",
-    "Option 3",
-    "Option 4",
-    "Option 5",
-]
+#OBJECT_REMOVAL_OPTIONS = [
+#    "Option 1",
+#    "Option 2",
+#    "Option 3",
+#    "Option 4",
+#    "Option 5",
+#]
 SEGMENTED_ST_OPTIONS = [
     "Candy",
     "Mosaic",
     "Picasso",
     "Rain Princess",
     "Starry Night",
+    "Tripping Balls",
 ]
 STYLE_TRANSFER_OPTIONS = [
     "Candy",
@@ -41,6 +40,7 @@ STYLE_TRANSFER_OPTIONS = [
     "Picasso",
     "Rain Princess",
     "Starry Night",
+    "Tripping Balls",
 ]
 IMAGE_PROCESSING_OPTIONS = [
     "Fake Motion",
@@ -134,20 +134,24 @@ def continue_processing(recipient_id, message):
     """
     global state
 
+    # frame extraction
     os.makedirs(os.path.join(os.getcwd(), "payload", state["uuid"]), exist_ok=True)
     extractFrames(
         os.path.join(os.getcwd(), "payload", f"{state['uuid']}.gif"),
         os.path.join(os.getcwd(), "payload", state["uuid"]),
     )
+    # object detection
+    objects_gif_arguments, OBJECT_REMOVAL_OPTIONS = GIFObjectDetection("./payload/" + str(state["uuid"]))
+    print("List of objects in GIF: ", OBJECT_REMOVAL_OPTIONS)
 
     if message.get("text"):
         text = message["text"].lower()
         if state["selected_option"] == "fake motion":
             if text in map(lambda x: x.lower(), FAKE_MOTION_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
-                # res_url = first_order_motion(state, text.replace(" ", "_"))
+                res_url = first_order_of_motion(state, text.replace(" ", "_"))
                 state["selected_option"] = None
-                # bot.send_image_url(recipient_id, res_url)
+                bot.send_image_url(recipient_id, res_url)
                 bot.send_quick_reply(
                     recipient_id,
                     "Select the next process to run",
@@ -157,14 +161,23 @@ def continue_processing(recipient_id, message):
         elif state["selected_option"] == "object removal":
             if text in map(lambda x: x.lower(), OBJECT_REMOVAL_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
-                # res_url = foreground_removal(state, text.replace(" ", "_"))
+                objects = [objects_gif_arguments[OBJECT_REMOVAL_OPTIONS.index(text.replace(" ", "_"))]]
+                res_url = foreground_removal(state, objects)
                 state["selected_option"] = None
-                # bot.send_image_url(recipient_id, res_url)
-                bot.send_quick_reply(
-                    recipient_id,
-                    "Select the next process to run",
-                    IMAGE_PROCESSING_OPTIONS,
-                )
+                if os.path.exists("./payload/FR_" + str(state["uuid"])):
+                    integ_check_fst = len(os.listdir("./payload/FR_" + str(state["uuid"]))); integ_check_orig = len(os.listdir("./payload/" + str(state["uuid"])))
+                    print("Send link if match: ", integ_check_fst, integ_check_orig)
+                    if integ_check_fst > 0:
+                        if integ_check_fst == integ_check_orig:
+                            bot.send_image_url(recipient_id, res_url)
+                            print("Link: ", res_url)
+                            shutil.rmtree("./payload/" + str(state["uuid"]), ignore_errors=True)
+                            shutil.rmtree("./payload/FR_" + str(state["uuid"]), ignore_errors=True)
+                            bot.send_quick_reply(
+                                recipient_id,
+                                "Select the next process to run",
+                                IMAGE_PROCESSING_OPTIONS,
+                            )
                 return "Continued processing"
         elif state["selected_option"] == "segmented st":
             if text in map(lambda x: x.lower(), SEGMENTED_ST_OPTIONS):

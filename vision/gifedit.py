@@ -2,12 +2,14 @@ import random, os, glob, imageio, pathlib, string, uuid
 import urllib.request
 from PIL import Image
 import numpy as np
+from vision import compress
 from vision.faststyletransfer_train import FastStyleTransfer
 from vision.faststyletransfer_eval import FasterStyleTransfer
-# from vision.segmentedstyletransfer import PartialStyleTransfer
-# from vision.firstordermotion import FirstOrderMotion
-# from vision.foregroundremoval import ForeGroundRemoval
-from vision import compress
+
+from vision.segmentedstyletransfer import PartialStyleTransfer
+from vision.firstordermotion import FirstOrderMotion
+from vision.foregroundremoval import ForeGroundRemoval, ObjectDetection
+
 
 
 def extractFrames(inGif, outFolder):
@@ -172,3 +174,21 @@ def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
+
+def GIFObjectDetection(orig_dir):
+
+    # Load frames
+    filenames = []
+    for f in glob.iglob(orig_dir + "/*"):
+        filenames.append(f)
+
+    # apply style transfer to each frame
+    complete_list=[[], []]
+    for filename in filenames:
+        frame_objects_indices, frame_objects_names = ObjectDetection(input_path = filename)
+        for i in range(len(frame_objects_indices)):
+            complete_list[0].append(frame_objects_indices[i])
+            complete_list[1].append(frame_objects_names[i])
+    objects_gif_arguments = list(set(complete_list[0]))
+    objects_gif_readable = list(set(complete_list[1]))
+    return objects_gif_arguments, objects_gif_readable

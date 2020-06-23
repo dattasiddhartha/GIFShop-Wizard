@@ -9,6 +9,11 @@
 <img src="vision/fast_neural_style_transfer/videos/FST.gif?raw=true" height="200px"></img>
 <img src="vision/fast_neural_style_transfer/videos/gif.gif?raw=true" height="200px"></img>
 
+Computer vision has been left out of the hands of many photoshopping enthusiasts and chatbot users alike. Our mission is to bring automated GIF-editing functionality to the masses with GIFShop Wizard. 
+
+<img src="vision/foreground_removal/videos/input/before.jpg?raw=true" height="200px"></img>
+<img src="vision/foreground_removal/videos/input/after.jpg?raw=true" height="200px"></img>
+
 Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](m.me/104902671262259)
 
 Implementing based on [functional
@@ -68,11 +73,14 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 
 ## Style masks
 
-| Mask name   | Source img | Iterations |
+| mask name   | source img | iterations |
 |-------------|------------|------------|
-| Shroom Trip | mosaic     | 200        |
 | mosaic      | mosaic     | 1000       |
-
+| candy      | candy     | 1000       |
+| picasso      | picasso     | 1000       |
+| rain princess      | rain princess     | 1000       |
+| starry night      | starry night     | 1000       |
+| Tripping balls | mosaic     | 200        |
 
 ### Warnings:
 

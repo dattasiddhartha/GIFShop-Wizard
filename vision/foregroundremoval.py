@@ -126,6 +126,15 @@ p2p = Pix2Pix(mode='try', checkpoint_dir='./vision/foreground_removal/pix2pix/ch
 
 coco_objects_list = ['person','bicycle','car','motorbike','aeroplane','bus','train','truck','boat','traffic light','fire hydrant','stop sign','parking meter','bench','bird','cat','dog','horse','sheep','cow','elephant','bear','zebra','giraffe','backpack','umbrella','handbag','tie','suitcase','frisbee','skis','snowboard','sports ball','kite','baseball bat','baseball glove','skateboard','surfboard','tennis racket','bottle','wine glass','cup','fork','knife','spoon','bowl','banana','apple','sandwich','orange','broccoli','carrot','hot dog','pizza','donut','cake','chair','sofa','pottedplant','bed','diningtable','toilet','tvmonitor','laptop','mouse','remote','keyboard','cell phone','microwave','oven','toaster','sink','refrigerator','book','clock','vase','scissors','teddy bear','hair drier','toothbrush']
 
+def ObjectDetection(input_path = './vision/foreground_removal/input/person_test.jpg'):
+    image = read_image(input_path) # arg 1: input image
+    image_yolo = prepare_image_yolo(image)
+    objects_detected_indices = list(set(detect(image_yolo, yolo)[2][0].numpy())) # auto-detected objects, return list
+    objects_detected_names = []
+    for index in objects_detected_indices:
+        objects_detected_names.append(coco_objects_list[int(index)])
+    return objects_detected_indices, objects_detected_names
+
 def ForeGroundRemoval(input_path = './vision/foreground_removal/input/person_test.jpg', objects = [], export_path = './vision/foreground_removal/output/G.png'):
 
     image = read_image(input_path) # arg 1: input image
@@ -142,12 +151,16 @@ def ForeGroundRemoval(input_path = './vision/foreground_removal/input/person_tes
     output_yolo = yolo(image_yolo)
     output_yolo = cut_result(output_yolo)
 
-    if len(objects) == 0:
-        print("Objects detected: ", objects_detected)
-        final_image = create_new_image(image, output_yolo, objects_detected) # arg 2: objects
+    print(objects)
+    print(objects_detected)
+    final_image = create_new_image(image, output_yolo, objects)
+
+    #if len(objects) == 0:
+    #    print("Objects detected: ", objects_detected)
+    #    final_image = create_new_image(image, output_yolo, objects_detected) # arg 2: objects
     
-    if len(objects) > 0:
-        final_image = create_new_image(image, output_yolo, req_objects_indices) # arg 2: objects
+    #if len(objects) > 0:
+    #    final_image = create_new_image(image, output_yolo, req_objects_indices) # arg 2: objects
 
     plt.imsave(export_path,final_image*0.5+0.5) # arg 3: export
 
