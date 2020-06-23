@@ -68,7 +68,7 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 * <i>vox-cpk.pth.tar</i> placed in <i>./vision/first_order_motion/</i>
 * <i>pix2pix/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
 * <i>yolo/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
-* <i>cycle_gan/checkpoints</i> placed in <i>./vision//</i>
+* <i>cycle_gan/checkpoints</i> placed in <i>./vision/</i>
 
 ## Style masks
 
