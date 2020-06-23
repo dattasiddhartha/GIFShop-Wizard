@@ -17,8 +17,8 @@ Computer vision has been left out of the hands of many photoshopping enthusiasts
 
 Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](m.me/104902671262259)
 
-Implementing based on [functional
-requirements](https://docs.google.com/document/d/1T6mk4aypOCCCxcz2EJtfLNoait8uimbkMFGiEmzRvdg/edit).
+<!--Implementing based on [functional
+requirements](https://docs.google.com/document/d/1T6mk4aypOCCCxcz2EJtfLNoait8uimbkMFGiEmzRvdg/edit).-->
 
 Current functionality:
 
@@ -88,9 +88,5 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 
 ### Warnings:
 
-* When appending shared docs on public files, be careful about the information
-  they or their history contain
-* When uploading repo files, be careful with tokens / secrets [might be best to
-  create a separate repo later]
 * Network latencies: We compress the GIF (<=1.0MB) to minimize latencies in image sending to user
 * GPU memory limits: There is a theoretical limit to the number of consecutive permutations users can perform on a single image. Even after clearing cache, there is residuals left over in memory.
