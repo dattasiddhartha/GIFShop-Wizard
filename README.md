@@ -11,8 +11,8 @@
 
 Computer vision has been left out of the hands of many photoshopping enthusiasts and chatbot users alike. Our mission is to bring automated GIF-editing functionality to the masses with GIFShop Wizard. 
 
-<img src="vision/foreground_removal/videos/input/before.jpg?raw=true" height="200px"></img>
-<img src="vision/foreground_removal/videos/input/after.jpg?raw=true" height="200px"></img>
+<img src="vision/foreground_removal/input/before.jpg?raw=true" height="400px"></img>
+<img src="vision/foreground_removal/input/after.jpg?raw=true" height="400px"></img>
 
 Submission for Facebook Hackathon 2020 (Messenger). [[live demo]](m.me/104902671262259)
 
