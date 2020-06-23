@@ -5,10 +5,10 @@
 <!--<img src="vision/first_order_motion/output/R3S6U3_FOM.gif?raw=true" height="200px"></img> -->
 <!--<img src="vision/fast_neural_style_transfer/videos/DZ1BJU_FST.gif?raw=true" height="200px"></img>-->
 
-<img src="vision/first_order_motion/output/FOM.gif?raw=true" height="200px"></img>
-<img src="vision/cycle_gan/datasets/zebra.gif?raw=true" height="200px"></img>
-<img src="vision/fast_neural_style_transfer/videos/FST.gif?raw=true" height="200px"></img>
-<img src="vision/fast_neural_style_transfer/videos/gif.gif?raw=true" height="200px"></img>
+<img src="vision/first_order_motion/output/FOM.gif?raw=true" height="150px"></img>
+<img src="vision/cycle_gan/datasets/zebra.gif?raw=true" height="150px"></img>
+<img src="vision/fast_neural_style_transfer/videos/FST.gif?raw=true" height="150px"></img>
+<img src="vision/fast_neural_style_transfer/videos/gif.gif?raw=true" height="150px"></img>
 
 Computer vision has been left out of the hands of many photoshopping enthusiasts and chatbot users alike. Our mission is to bring automated GIF-editing functionality to the masses with GIFShop Wizard. 
 
