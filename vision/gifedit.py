@@ -9,6 +9,7 @@ from vision.faststyletransfer_eval import FasterStyleTransfer
 from vision.segmentedstyletransfer import PartialStyleTransfer
 from vision.firstordermotion import FirstOrderMotion
 from vision.foregroundremoval import ForeGroundRemoval, ObjectDetection
+from vision.cyclegan import CYCLEGAN
 
 
 
@@ -174,6 +175,28 @@ def stitch_FR(orig_dir, styled_dir, unique_filename, objects):
     for filename in filenames_ST:
         images.append(imageio.imread(filename))
     imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
+
+def stitch_CGAN(orig_dir, unique_filename, destination_style):
+
+    CYCLEGAN(
+        destination_style=destination_style, 
+        source_image=orig_dir, 
+        uniqueID=str(unique_filename),   
+    )
+
+    filenames = []
+    for f in glob.iglob("./vision/cycle_gan/results/"+str(destination_style)+"/test_latest/images/" + "/*"):
+        if str(unique_filename) in str(f).split("\\")[1].split("."):
+            if "fake.png" in str(f).split("_"):
+                filenames.append(f)
+
+    # Save into a GIF file that loops forever
+    images = []
+    print(filenames)
+    for filename in filenames:
+        images.append(imageio.imread(filename))
+    imageio.mimsave(str(orig_dir + ".gif").replace("\\", "/"), images)
+
 
 def GIFObjectDetection(orig_dir):
 

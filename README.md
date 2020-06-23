@@ -6,6 +6,7 @@
 <!--<img src="vision/fast_neural_style_transfer/videos/DZ1BJU_FST.gif?raw=true" height="200px"></img>-->
 
 <img src="vision/first_order_motion/output/FOM.gif?raw=true" height="200px"></img>
+<img src="vision/cycle_gan/datasets/zebra.gif?raw=true" height="200px"></img>
 <img src="vision/fast_neural_style_transfer/videos/FST.gif?raw=true" height="200px"></img>
 <img src="vision/fast_neural_style_transfer/videos/gif.gif?raw=true" height="200px"></img>
 
@@ -28,15 +29,12 @@ Current functionality:
 * Fast Style Transfer (we store pretrained styles to be applied to user input images)
 * Segmented Style Transfer (we apply instance segmentation to images and apply
   FST to those segments only)
+* CycleGAN (i.e. stylize specific objects and components of a scene)
 * First Order of Motion (i.e. DeepFakes, as long as driver video and content image are cropped in shape enough)
-* Foreground Removal
+* Foreground Removal (i.e. remove certain objects in images)
 * Supports both static images and GIFs
-
-Next steps:
-
 * Dialogue flow
 * Error handling
-
 
 ## Usage
 
@@ -70,6 +68,7 @@ Download weights from [here](https://drive.google.com/drive/folders/1ANqflh1dxSf
 * <i>vox-cpk.pth.tar</i> placed in <i>./vision/first_order_motion/</i>
 * <i>pix2pix/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
 * <i>yolo/checkpoints</i> placed in <i>./vision/foreground_removal/</i>
+* <i>cycle_gan/checkpoints</i> placed in <i>./vision//</i>
 
 ## Style masks
 
