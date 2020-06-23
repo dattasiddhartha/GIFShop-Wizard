@@ -7,6 +7,7 @@ from vision.gifedit import (
     stitch_FST_Images_ServerStyle,
     stitch_partialFST_Images_ServerStyle,
     stitch_FR,
+    stitch_CGAN,
 )
 from vision.firstordermotion import FirstOrderMotion
 
@@ -185,3 +186,31 @@ def segmented_style_transfer(state, style):
         )
 
         return req_url
+
+
+def cycle_gan(state, style):
+    """
+    Runs cycle generative adversarial network, updates the state, and returns whether
+    the operation was successful
+    """
+    stitch_CGAN(
+    orig_dir = "./payload/" + str(state["uuid"]), 
+    unique_filename = str(state["uuid"]), 
+    destination_style = style,
+    )
+
+    # GIF compression
+    compress.resize_gif(
+        "./payload/" + str(state["uuid"]) + ".gif",
+        save_as="./payload/" + str(state["uuid"]) + ".gif",
+        resize_to=None,
+        magnitude=5,
+    )
+
+    req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+
+    print(
+        "Img url: ", req_url,
+    )
+
+    return req_url

@@ -13,8 +13,45 @@ from vision.methods import (
     first_order_of_motion,
     foreground_removal,
     segmented_style_transfer,
+    cycle_gan,
 )
 
+FAKE_MOTION_IMAGES = [
+    "https://upload.wikimedia.org/wikipedia/commons/8/8d/Vladimir_Putin_%282020-02-20%29.jpg",
+    "https://will.illinois.edu/images/uploads/50405/president_barack_obama.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg",
+]
+STYLE_TRANSFER_IMAGES = [
+    "https://inews.gtimg.com/newsapp_match/0/10560893188/0",
+    "https://images.deepai.org/converted-papers/1906.01123/images/qualitive1/style_2.jpg",
+    "https://www.stunewsnewport.com/images/editorial/jan2/CubismLRG.jpg",
+    "https://d2halst20r4hcy.cloudfront.net/wallpapers2/079/340/083/456/original/file.jpg",
+    "https://bsaber.com/wp-content/uploads/2020/01/49352bc094b7e66f706b5671d5da669a6266964d.jpg",
+    "https://10mosttoday.com/wp-content/uploads/2014/12/Vincent_van_Gogh_self_portrait.jpg",
+    "https://pic1.zhimg.com/v2-d82300aae5b1fd5f7303b057abca8a41_200x112.jpg",
+    "https://1.bp.blogspot.com/-UMnqX3NZWxo/XX8I0MhluCI/AAAAAAAAADA/MoU7Mi8jp1Ejrsvf7bBLAuUNWOovdJP4QCLcBGAsYHQ/s1600/202685_0-803-5447-5447.jpg",
+    "https://www.receiteria.com.br/wp-content/uploads/receitas-com-queijo-mussarela-0-1200x738.jpg",
+    "https://asian-recipe.com/wp-content/uploads/2017/11/bibimbap-mixed-rice-1200x900.jpg",
+]
+SEGMENTED_ST_IMAGES = [
+    "https://inews.gtimg.com/newsapp_match/0/10560893188/0",
+    "https://images.deepai.org/converted-papers/1906.01123/images/qualitive1/style_2.jpg",
+    "https://www.stunewsnewport.com/images/editorial/jan2/CubismLRG.jpg",
+    "https://d2halst20r4hcy.cloudfront.net/wallpapers2/079/340/083/456/original/file.jpg",
+    "https://bsaber.com/wp-content/uploads/2020/01/49352bc094b7e66f706b5671d5da669a6266964d.jpg",
+    "https://10mosttoday.com/wp-content/uploads/2014/12/Vincent_van_Gogh_self_portrait.jpg",
+    "https://pic1.zhimg.com/v2-d82300aae5b1fd5f7303b057abca8a41_200x112.jpg",
+    "https://1.bp.blogspot.com/-UMnqX3NZWxo/XX8I0MhluCI/AAAAAAAAADA/MoU7Mi8jp1Ejrsvf7bBLAuUNWOovdJP4QCLcBGAsYHQ/s1600/202685_0-803-5447-5447.jpg",
+    "https://www.receiteria.com.br/wp-content/uploads/receitas-com-queijo-mussarela-0-1200x738.jpg",
+    "https://asian-recipe.com/wp-content/uploads/2017/11/bibimbap-mixed-rice-1200x900.jpg",
+]
+GAN_IMAGES = [
+    "https://ychef.files.bbci.co.uk/976x549/p07v2wjn.jpg",
+    "https://i0.wp.com/www.horsetalk.co.nz/wp-content/uploads/2016/08/shiny-coat-stock.jpg?resize=800%2C445",
+    "https://www.atlasofplaces.com/atlas-of-places-images/ATLAS-OF-PLACES-CLAUDE-MONET-LA-LUMIE%CC%80RE-GPH-2.jpg",
+    "https://www.holland.com/upload_mm/3/d/9/68950_fullimage_vangogh-portert-1360.jpg",
+    "https://www.nationalgeographic.com/content/dam/travel/2019-digital/yosemite-guide/yosemite-national-park-california.jpg",
+]
 FAKE_MOTION_OPTIONS = [
     "Putin",
     "Obama",
@@ -77,8 +114,16 @@ IMAGE_PROCESSING_OPTIONS = [
     "Fake Motion",
     "Object Removal",
     "Style Transfer",
+    "GAN",
     "Segmented ST",
     "Finish",
+]
+GAN_OPTIONS = [
+    "apple2orange",
+    "horse2zebra",
+    "style_monet",
+    "style_vangogh",
+    "summer2winter",
 ]
 
 app = Flask(__name__)
@@ -296,6 +341,18 @@ def continue_processing(recipient_id, message):
                                 "Select the next process to run",
                                 IMAGE_PROCESSING_OPTIONS,
                             )
+                return "Continued processing"
+        elif state["selected_option"] == "gan":
+            if text in map(lambda x: x.lower(), GAN_OPTIONS):
+                bot.send_text(recipient_id, "Processing image, please wait")
+                res_url = cycle_gan(state, text.replace(" ", "_"))
+                state["selected_option"] = None
+                bot.send_image_url(recipient_id, res_url)
+                bot.send_quick_reply(
+                    recipient_id,
+                    "Select the next process to run",
+                    IMAGE_PROCESSING_OPTIONS,
+                )
                 return "Continued processing"
 
         # No option is currently selected so prompt for an option
