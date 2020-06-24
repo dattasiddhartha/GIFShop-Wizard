@@ -191,6 +191,7 @@ def stitch_CGAN(orig_dir, unique_filename, destination_style):
         + "/test_latest/images/"
         + "/*"
     ):
+        print(f)
         if str(unique_filename) in str(f).split("\\")[1].split("."):
             if "fake.png" in str(f).split("_"):
                 filenames.append(f)

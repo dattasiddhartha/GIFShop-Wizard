@@ -17,5 +17,5 @@ def CYCLEGAN(destination_style, source_image, uniqueID):
         subprocess.run("python ./vision/cycle_gan/test.py --dataroot "+str(source_image)+" --name style_vangogh --model test --no_dropout")
         
     if destination_style == "summer2winter":
-        subprocess.run("python ./vision/cycle_gan/test.py --dataroot "+str(source_image)+" --name summer2winter_yosemite --model test --no_dropout")
+        subprocess.run("python ./vision/cycle_gan/test.py --dataroot "+str(source_image)+" --name summer2winter --model test --no_dropout")
         

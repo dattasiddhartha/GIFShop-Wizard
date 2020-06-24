@@ -217,9 +217,12 @@ def continue_processing(recipient_id, message):
         os.path.join(os.getcwd(), "payload", state["uuid"]),
     )
     # Object detection
+    OBJECT_REMOVAL_IMAGES=[]
     objects_gif_arguments, OBJECT_REMOVAL_OPTIONS = GIFObjectDetection(
         "./payload/" + str(state["uuid"])
     )
+    for i in OBJECT_REMOVAL_OPTIONS:
+        OBJECT_REMOVAL_IMAGES.append("https://assets.weforum.org/article/image/25NbfYbkiuMvTW3P_YO8QeE-SxtvNKGRX9Dgr6W-gNE.jpg")
     print("List of objects in GIF: ", OBJECT_REMOVAL_OPTIONS)
     torch.cuda.empty_cache()
     # OBJECT_REMOVAL_OPTIONS = ["test"]
@@ -244,7 +247,7 @@ def continue_processing(recipient_id, message):
                 bot.send_text(recipient_id, "Processing image, please wait")
                 objects = [
                     objects_gif_arguments[
-                        OBJECT_REMOVAL_OPTIONS.index(text.replace(" ", "_"))
+                        OBJECT_REMOVAL_OPTIONS.index(text)
                     ]
                 ]
                 bot.send_typing_on(recipient_id)
