@@ -383,7 +383,7 @@ def continue_processing(recipient_id, message):
 
     # If we are here then it means an invalid command was sent
     state["selected_option"] = None
-    bot.send_quick_reply(
-        recipient_id, "Please send a valid command", IMAGE_PROCESSING_OPTIONS
-    )
+    #bot.send_quick_reply(
+    #    recipient_id, "Please send a valid command", IMAGE_PROCESSING_OPTIONS
+    #)
     return "Continued processing"
