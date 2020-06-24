@@ -3,9 +3,7 @@
 *Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/),
 [Jacky Lee](https://github.com/grenmester)
 
-Submission for the 2020 Facebook Messaging Hackathon
-
-Live Demo: [https://m.me/104902671262259](https://m.me/104902671262259)
+Facebook Messaging Hackathon 2020 | [[demo]](https://m.me/104902671262259) | [[video]](https://youtu.be/A8k03a6ZeP0) | [[devpost]](https://devpost.com/software/gifshop-wizard)
 
 <img src="vision/first_order_motion/output/FOM.gif?raw=true" height="150px"></img>
 <img src="vision/cycle_gan/datasets/zebra.gif?raw=true" height="150px"></img>
@@ -53,10 +51,6 @@ Run the Messenger bot with the following command.
 python serve.py
 ngrok http 8000
 ```
-
-Remember to update the [Messenger
-Webhook](https://developers.facebook.com/apps/309273736750794/messenger/settings/)
-when running the `ngrok` service.
 
 ## Additional Information
 
