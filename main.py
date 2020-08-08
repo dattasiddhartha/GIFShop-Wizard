@@ -235,6 +235,13 @@ def continue_processing(recipient_id, message):
                 bot.send_typing_on(recipient_id)
                 res_url = first_order_of_motion(state, text.replace(" ", "_"))
                 state["selected_option"] = None
+                # GIF compression
+                compress.resize_gif(
+                    "./payload/" + str(state["uuid"]) + ".gif",
+                    save_as="./payload/" + str(state["uuid"]) + "_compressed.gif",
+                    resize_to=None,
+                    magnitude=5,
+                )
                 bot.send_image_url(recipient_id, res_url)
                 bot.send_quick_reply(
                     recipient_id,
@@ -263,6 +270,13 @@ def continue_processing(recipient_id, message):
                     print("Send link if match: ", integ_check_fst, integ_check_orig)
                     if integ_check_fst > 0:
                         if integ_check_fst == integ_check_orig:
+                            # GIF compression
+                            compress.resize_gif(
+                                "./payload/" + str(state["uuid"]) + ".gif",
+                                save_as="./payload/" + str(state["uuid"]) + "_compressed.gif",
+                                resize_to=None,
+                                magnitude=5,
+                            )
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
                             shutil.rmtree(
@@ -278,6 +292,7 @@ def continue_processing(recipient_id, message):
                             )
                 return "Continued processing"
         elif state["selected_option"] == "segmented st":
+            # assume segment index 0
             if text in map(lambda x: x.lower(), SEGMENTED_ST_OPTIONS):
                 bot.send_text(recipient_id, "Processing image, please wait")
                 bot.send_typing_on(recipient_id)
@@ -299,6 +314,13 @@ def continue_processing(recipient_id, message):
                     print(len(filenames_ST), len(filenames))
                     if len(filenames_ST) > 0:
                         if len(filenames_ST) == len(filenames):
+                            # GIF compression
+                            compress.resize_gif(
+                                "./payload/" + str(state["uuid"]) + ".gif",
+                                save_as="./payload/" + str(state["uuid"]) + "_compressed.gif",
+                                resize_to=None,
+                                magnitude=5,
+                            )
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
                             shutil.rmtree(
@@ -330,6 +352,13 @@ def continue_processing(recipient_id, message):
                     print("Send link if match: ", integ_check_fst, integ_check_orig)
                     if integ_check_fst > 0:
                         if integ_check_fst == integ_check_orig:
+                            # GIF compression
+                            compress.resize_gif(
+                                "./payload/" + str(state["uuid"]) + ".gif",
+                                save_as="./payload/" + str(state["uuid"]) + "_compressed.gif",
+                                resize_to=None,
+                                magnitude=5,
+                            )
                             bot.send_image_url(recipient_id, res_url)
                             print("Link: ", res_url)
                             shutil.rmtree(
@@ -350,6 +379,13 @@ def continue_processing(recipient_id, message):
                 bot.send_text(recipient_id, "Processing image, please wait")
                 res_url = cycle_gan(state, text.replace(" ", "_"))
                 state["selected_option"] = None
+                # GIF compression
+                compress.resize_gif(
+                    "./payload/" + str(state["uuid"]) + ".gif",
+                    save_as="./payload/" + str(state["uuid"]) + "_compressed.gif",
+                    resize_to=None,
+                    magnitude=5,
+                )
                 bot.send_image_url(recipient_id, res_url)
                 bot.send_quick_reply(
                     recipient_id,
