@@ -31,7 +31,7 @@ def fast_style_transfer(state, style):
                 if os.path.isfile(name)
             ]
         ):
-            req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+            req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
             return req_url
     else:
         if not os.path.exists("./payload/FST_" + str(state["uuid"])):
@@ -44,15 +44,7 @@ def fast_style_transfer(state, style):
             style,
         )
 
-        # GIF compression
-        compress.resize_gif(
-            "./payload/" + str(state["uuid"]) + ".gif",
-            save_as="./payload/" + str(state["uuid"]) + ".gif",
-            resize_to=None,
-            magnitude=5,
-        )
-
-        req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+        req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
 
         print(
             "Img url: ", req_url,
@@ -79,15 +71,7 @@ def first_order_of_motion(state, source):
         model_path="./vision/first_order_motion/vox-cpk.pth.tar",
     )
 
-    # GIF compression
-    compress.resize_gif(
-        "./payload/" + str(state["uuid"]) + ".gif",
-        save_as="./payload/" + str(state["uuid"]) + ".gif",
-        resize_to=None,
-        magnitude=5,
-    )
-
-    req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+    req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
 
     print(
         "Img url: ", req_url,
@@ -117,7 +101,7 @@ def foreground_removal(state, objects):
                 if os.path.isfile(name)
             ]
         ):
-            req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+            req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
             return req_url
     else:
         if not os.path.exists("./payload/FR_" + str(state["uuid"])):
@@ -129,15 +113,7 @@ def foreground_removal(state, objects):
             objects,
         )
 
-        # GIF compression
-        compress.resize_gif(
-            "./payload/" + str(state["uuid"]) + ".gif",
-            save_as="./payload/" + str(state["uuid"]) + ".gif",
-            resize_to=None,
-            magnitude=5,
-        )
-
-        req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+        req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
 
         print(
             "Img url: ", req_url,
@@ -165,7 +141,7 @@ def segmented_style_transfer(state, style):
                 if os.path.isfile(name)
             ]
         ):
-            req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+            req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
             return req_url
     else:
         if not os.path.exists("./payload/FST_" + str(state["uuid"])):
@@ -175,15 +151,7 @@ def segmented_style_transfer(state, style):
             "./payload/" + str(state["uuid"]), str(state["uuid"]), style
         )
 
-        # GIF compression
-        compress.resize_gif(
-            "./payload/" + str(state["uuid"]) + ".gif",
-            save_as="./payload/" + str(state["uuid"]) + ".gif",
-            resize_to=None,
-            magnitude=5,
-        )
-
-        req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+        req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
 
         print(
             "Img url: ", req_url,
@@ -203,15 +171,7 @@ def cycle_gan(state, style):
         destination_style=style,
     )
 
-    # GIF compression
-    compress.resize_gif(
-        "./payload/" + str(state["uuid"]) + ".gif",
-        save_as="./payload/" + str(state["uuid"]) + ".gif",
-        resize_to=None,
-        magnitude=5,
-    )
-
-    req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + ".gif")
+    req_url = str(ngrok_link + "/file/" + str(state["uuid"]) + "_compressed.gif")
 
     print(
         "Img url: ", req_url,
