@@ -1,9 +1,7 @@
-# GIFShop Wizard
+# GIFShop Wizard <h6>[[demo]](https://m.me/104902671262259) | [[video]](https://youtu.be/A8k03a6ZeP0) | [[devpost]](https://devpost.com/software/gifshop-wizard)</h6>
 
 *Collaborators*: [Siddhartha Datta](https://github.com/dattasiddhartha/),
 [Jacky Lee](https://github.com/grenmester)
-
-Facebook Messaging Hackathon 2020 | [[demo]](https://m.me/104902671262259) | [[video]](https://youtu.be/A8k03a6ZeP0) | [[devpost]](https://devpost.com/software/gifshop-wizard)
 
 <img src="vision/first_order_motion/output/FOM.gif?raw=true" height="150px"></img>
 <img src="vision/cycle_gan/datasets/zebra.gif?raw=true" height="150px"></img>
@@ -106,5 +104,5 @@ Download weights from
   [[paper]](https://arxiv.org/abs/1703.10593)
   [[code]](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix)
 * Segmented Style Transfer
-  [[paper]](https://www.cv-foundation.org/openaccess/content\_cvpr\_2015/papers/Long\_Fully\_Convolutional\_Networks\_2015\_CVPR\_paper.pdf)
+  [[code]](https://github.com/dattasiddhartha/segmented-style-transfer) [[paper]](https://www.cv-foundation.org/openaccess/content\_cvpr\_2015/papers/Long\_Fully\_Convolutional\_Networks\_2015\_CVPR\_paper.pdf)
   [[code]](https://github.com/spmallick/learnopencv)
